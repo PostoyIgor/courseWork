@@ -6,8 +6,7 @@
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="http://malsup.github.com/jquery.form.js"></script>
-    <script src="<c:url value="/resources/js/main.js" />"></script>
+    <%--<script src="<c:url value="/resources/js/main.js" />"></script>--%>
     <script src="<c:url value="/resources/js/divPopUp.js" />"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Hotel Booking Service</title>
@@ -26,7 +25,9 @@
         <form:label path="password">Password:</form:label><br/>
         <form:password path="password"/>
         <form:errors path="password" cssClass="error"/><br/>
-        <input type="submit" class="btnLogin" value="Login">
+
+        <input type="submit" id="btnLogin" value="Login">
+        <span id="ajax-error"></span>
     </form:form>
     </div>
     <div class="close">[X]</div>
@@ -34,7 +35,8 @@
     <div id="back"></div>
     </c:when>
     <c:otherwise>
-        <a class="menuLink" href="#">${user.login} Profile</a>
+        <a class="menuLink" href="/profile">${user.login} Profile</a>
+        <a class="menuLink" href="/logout">Logout</a>
     </c:otherwise>
 </c:choose>
     <div class="right-panel">
@@ -54,21 +56,21 @@
     <option value="4">4</option>
     <option value="5">5</option>
     </select>
-    <input type="date" name="fromDate">
-    <input type="date" name="toDate">
+    <input type="date" name="fromDate" class="date" data-date-split-input="true">
+    <input type="date" name="toDate" class="date" data-date-split-input="true">
     <label id="numOfTravelers">Number of travelers</label>
     <input type="number" name="numOfTravelers">
     <input type="submit" value="Search" name="searchSubmit">
     </form>
     </div>
     </div>
-    <div id="time">
+    <div id="hotel-list">
     <table class="table-hotels">
     <c:forEach items="${hotels}" var="hotel">
         <tr>
             <td>
                 <div>
-                    <img class="hotel-img" src="/resources/images/hotels/${hotel.id}.jpg">
+                    <img class="hotel-img" onerror="this.onerror=null;this.src='../resources/images/rooms/noImage.jpg'" src="/resources/images/hotels/${hotel.id}.jpg">
                 </div>
             </td>
             <td>
@@ -76,29 +78,10 @@
                     <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city}
                 </div>
             </td>
-
         </tr>
     </c:forEach>
     </table>
     </div>
-    <div class="addHotel">
-    <form id="add-hotel" method="post" action="/addHotel" enctype="multipart/form-data">
-    <div>
-    <input id="hotelName" type="text" name="name" placeholder="Hotel Name" required>
-    </div>
-    <div>
-    <input id="hotelCity" type="text" name="city" placeholder="City" required>
-    </div>
-    <div>
-    <input id="hotelStars" name="stars" placeholder="Stars" type="number" required>
-    </div>
-    <div>
-    <input type="file" name="image">
-    </div>
-    <div>
-    <input id="hotelSubmit" type="submit" value="Add Hotel">
-    </div>
-    </form>
-    </div>
+
     </body>
     </html>

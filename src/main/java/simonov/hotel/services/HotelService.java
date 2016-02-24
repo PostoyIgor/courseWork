@@ -4,13 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simonov.hotel.dao.HotelDAO;
 import simonov.hotel.entity.Hotel;
-import simonov.hotel.entity.Room;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class HotelService {
@@ -22,9 +18,9 @@ public class HotelService {
         return hotelDAO.getHotels();
     }
 
-    public List<Hotel> getHotelsWithTempl(String city, String hotelName, Integer stars, Date fromDate, Date toDate, Integer numOfTravelers) {
+    public List<Hotel> getHotelsWithPattern(String city, String hotelName, Integer stars, LocalDate fromDate, LocalDate toDate, Integer numOfTravelers) {
 
-        return hotelDAO.getHotelsWithTempl(city,hotelName,stars,fromDate,toDate,numOfTravelers);
+        return hotelDAO.getHotelsWithPattern(city,hotelName,stars,fromDate,toDate,numOfTravelers);
     }
 
     public Hotel getHotelById(int id) {
@@ -33,5 +29,9 @@ public class HotelService {
 
     public void saveHotel(Hotel hotel) {
         hotelDAO.saveHotel(hotel);
+    }
+
+    public List<Hotel> getUserHotels(int userId){
+       return hotelDAO.getUserHotels(userId);
     }
 }

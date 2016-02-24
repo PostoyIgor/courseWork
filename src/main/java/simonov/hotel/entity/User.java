@@ -1,8 +1,8 @@
 package simonov.hotel.entity;
 
-import org.springframework.context.annotation.Scope;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
@@ -11,26 +11,35 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
-    @Column
+
+    @Column(unique = true)
     private String login;
+
     @Column
     private String firstName;
+
     @Column
     private String lastName;
-    @Column
+
+    @Column(unique = true)
     private String email;
+
     @Column
-    private boolean isAdmin;
+    private boolean admin;
+
     @Column
     private String password;
 
-    public User() {
-    }
+    @Column
+    private String phone;
 
-    public User(String login, String password, String firstName) {
-        this.login = login;
-        this.password = password;
-        this.firstName = firstName;
+    @OneToMany(mappedBy = "user")
+    private List<Hotel> hotels;
+
+    @OneToMany
+    private List<Booking> bookings;
+
+    public User() {
     }
 
     public String getPassword() {
@@ -82,10 +91,34 @@ public class User {
     }
 
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public List<Hotel> getHotels() {
+        return hotels;
+    }
+
+    public void setHotels(List<Hotel> hotels) {
+        this.hotels = hotels;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

@@ -24,6 +24,9 @@ public class Hotel {
     @Fetch(FetchMode.SELECT)
     private List<Room> rooms;
 
+    @ManyToOne
+    private User user;
+
     public int getId() {
         return id;
     }
@@ -69,5 +72,13 @@ public class Hotel {
 
     public void addRoom(Room room){
         getRooms().add(room);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

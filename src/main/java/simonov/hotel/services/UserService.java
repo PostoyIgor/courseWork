@@ -24,4 +24,8 @@ public class UserService {
     public List<User> getUsers(){
         return userDAO.getUsers();
     }
+
+    public User getLoggedUser(String login, String password){
+       return userDAO.getLoggedUser(login,password);
+    }
 }

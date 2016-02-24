@@ -5,7 +5,7 @@
 <html>
 <head>
     <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="<c:url value='/resources/js/main.js'/>"></script>
+    <%--<script src="<c:url value='/resources/js/main.js'/>"></script>--%>
     <link href="<c:url value='/resources/css/styles.css'/>" rel="stylesheet">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Hotel Booking</title>
@@ -25,6 +25,10 @@
         <form:label path="lastName">Last Name:</form:label><br/>
         <form:input path="lastName"/><br/>
         <form:errors path="lastName" cssClass="error"/>
+
+        <form:label path="phone">Phone:</form:label><br/>
+        <form:input path="phone"/><br/>
+        <form:errors path="phone" cssClass="error"/>
 
         <form:label path="email">E-Mail:</form:label><br/>
         <form:input path="email"/><br/>

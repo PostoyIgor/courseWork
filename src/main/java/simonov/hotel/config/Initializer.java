@@ -20,6 +20,7 @@ public class Initializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
         ctx.register(WebAppConfig.class, HibernateConfig.class);
         servletContext.addListener(new ContextLoaderListener(ctx));
+        servletContext.addListener(new SessionListener());
         ctx.setServletContext(servletContext);
 
         FilterRegistration.Dynamic encodingFilter = servletContext.addFilter("encoding-filter",

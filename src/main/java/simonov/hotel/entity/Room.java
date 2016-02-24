@@ -15,26 +15,26 @@ public class Room {
     private int id;
 
     @Column
+    private int number;
+
+    @Column
     private String type;
+
+    @Column
+    private String description;
 
     @Column
     private int price;
 
     @Column
     private int seats;
+
+    @OneToMany
+    private List<Booking> bookings;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hotel_id" )
     private Hotel hotel;
-//    public boolean isFree(LocalDate start, LocalDate end){
-//        for(Booking booking: getBookings()){
-//            if(booking.getEndDate().before(start))
-//                continue;
-//            if(booking.getStartDate().after(end))
-//                continue;
-//            return false;
-//        }
-//        return true;
-//    }
 
     public int getPrice() {
         return price;
@@ -73,5 +73,29 @@ public class Room {
 
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

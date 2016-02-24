@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import simonov.hotel.entity.Hotel;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -36,17 +36,23 @@ public class HotelDAO {
         return (Hotel) getCurrentSession().get(Hotel.class, id);
     }
 
-    public List<Hotel> getHotelsWithTempl(String city, String hotelName, Integer stars, Date fromDate, Date toDate, Integer numOfTravelers) {
+    public List<Hotel> getHotelsWithPattern(String city, String hotelName, Integer stars, LocalDate fromDate, LocalDate toDate, Integer numOfTravelers) {
         Criteria criteria = getCurrentSession().createCriteria(Hotel.class);
         if (city.length() != 0) {
-            criteria.add(Restrictions.like("city", city+"%"));
+            criteria.add(Restrictions.like("city", city + "%"));
         }
-        if (hotelName.length() != 0){
-            criteria.add(Restrictions.like("name",hotelName+"%"));
+        if (hotelName.length() != 0) {
+            criteria.add(Restrictions.like("name", hotelName + "%"));
         }
-        if (stars!=null){
-            criteria.add(Restrictions.eq("stars",stars));
+        if (stars != null) {
+            criteria.add(Restrictions.eq("stars", stars));
         }
         return criteria.list();
+    }
+
+    public List<Hotel> getUserHotels(int userId) {
+        Query query = getCurrentSession().createQuery("from Hotel where user.id = :userId");
+        query.setInteger("userId", userId);
+        return query.list();
     }
 }

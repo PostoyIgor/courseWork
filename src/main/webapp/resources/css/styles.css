@@ -1,0 +1,113 @@
+h3 {
+    font-family:cursive;
+    color:#36648b;
+    text-align:center;
+    display: inline;
+}
+
+.boxBody {
+    width: 200px;
+}
+#btnLogin {
+    float: right;
+    margin-top: 10px;
+}
+#back {
+    /* задний фон по умолчанию не виден, его цвет черный, он занимает всё пространство по высоте и ширине,
+     его позиция фиксирована , то есть при скроллинге он никуда не денется */
+    display: none;
+    height:100%;
+    width:100%;
+    z-index:10;
+    position: fixed;
+    top:0px;
+    left:0px;
+    background:#000;
+}
+    /* само всплывающее окно , ширину и высоту Вы можете задать на свое усмотрение ,
+     но нет смысла задавать их слишком большими, иначе окно займет весь экран, кроме того следует
+      обратить внимание на свойство margin-left отступ слева , чтобы окно находилось по центру
+       экрана это свойство следует указывать из расчета ширина окна деленная на два плюс два пиксела ,
+        например для ширины окна 300px, margin-left будет равняться 152px  */
+#popup {
+    display: none;
+    width: 200px;
+    z-index: 20;
+    position: fixed;
+    top: 10%;
+    right: 8px;
+    overflow-y:auto;
+    color: #000;
+    background-color: lavender;
+    border: 15px solid lightcyan;
+    border-radius: 15px 15px 15px 15px;
+    height:200px;
+}
+div.close {
+    position: absolute;
+    right: 19px;
+    top: 1px;
+    cursor: pointer;
+    color: red;
+    width:15px;
+    height:15px;
+    font-weight:bold;
+}
+
+/*div#time {*/
+    /*margin-top: 20px;*/
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    /*justify-content:center;*/
+/*}*/
+*{
+    font-family: verdana,arial,sans-serif;
+    /*background-image: url("/resources/images/bg.jpg");*/
+}
+
+img {
+    height: auto;
+    width: 150px;
+    margin: 5px 5px 5px;
+}
+img.stars,img.image-ok {
+    width: 15px;
+}
+
+div.add-room-div {
+    position: absolute;
+    right: 10px;
+}
+
+div.right-panel {
+    position: relative;
+    left: -4px;
+    float: left;
+    height: 100%;
+    width: 150px;
+    background-color: #C8EEFD;
+    display: inline-block;
+    margin-right: 10px;
+}
+#hotel-info{
+    top: 5px;
+    left: 10px;
+
+}
+form#filter-form input {
+    width: 130px;
+}
+div.main {
+    float: left;
+    display: inline-block;
+    left: 140px;
+}
+span {
+    text-align: center;
+}
+#ajax-error{color:red;}
+
+.menuLink {
+    float: right;
+    margin: 10px 10px 10px 10px;
+}
