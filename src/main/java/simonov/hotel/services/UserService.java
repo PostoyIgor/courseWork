@@ -2,27 +2,30 @@ package simonov.hotel.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import simonov.hotel.dao.UserDAO;
+import simonov.hotel.dao.repository.IUserDAO;
 import simonov.hotel.entity.User;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
-    UserDAO userDAO;
+    IUserDAO userDAO;
 
     public void save(User user){
         userDAO.save(user);
     }
 
-    public User getUser(int id){
-       return userDAO.getUser(id);
+    public User get(Integer id){
+       return userDAO.get(id);
     }
 
-    public List<User> getUsers(){
-        return userDAO.getUsers();
+    public List<User> getAll(){
+        return userDAO.getAll();
     }
 
     public User getLoggedUser(String login, String password){

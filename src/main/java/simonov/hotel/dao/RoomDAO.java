@@ -32,7 +32,6 @@ SessionFactory sessionFactory;
     }
 
     public boolean isFree(LocalDate start, LocalDate end, int roomId){
-//         getCurrentSession().createCriteria(Booking.class).add(Restrictions.eq("room_id",1)).list();
         Query query = getCurrentSession().createQuery("from Booking where room.id = :roomId");
         query.setInteger("roomId",roomId);
         List<Booking> bookings = query.list();

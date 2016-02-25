@@ -15,7 +15,7 @@
 </div>
 <div class="right-panel">
 </div>
-<div >
+<div>
     <div class="main">
         <table>
             <c:forEach items="${hotel.rooms}" var="room">
@@ -38,19 +38,19 @@
     </div>
 </div>
 <c:choose>
-    <c:when test="${user.admin}"> <%-- TODO--%>
-<div class="add-room-div">
-    <form id="add-room" method="post" action="/addRoom" enctype="multipart/form-data">
-        <input id="roomNumber" name="number" type="number" placeholder="№" required><br/>
-        <input id="roomType" type="text" name="type" placeholder="Type" required><br/>
-        <input id="roomPrice" type="number" name="price" placeholder="Price" required><br/>
-        <textarea id="roomDescription" name="description" placeholder="Description"></textarea><br/>
-        <input id="roomPlaces" name="seats" placeholder="Seats" type="number" required><br/>
-        <input type="file" name="image"><br/>
-        <input type="hidden" name="hotel" value="${hotel.id}">
-        <input id="roomSubmit" type="submit" value="Add Room">
-    </form>
-</div>
+    <c:when test="${user.admin and hotel.user.id eq user.id}">
+        <div class="add-room-div">
+            <form id="add-room" method="post" action="/addRoom" enctype="multipart/form-data">
+                <input id="roomNumber" name="number" type="number" placeholder="№" required><br/>
+                <input id="roomType" type="text" name="type" placeholder="Type" required><br/>
+                <input id="roomPrice" type="number" name="price" placeholder="Price" required><br/>
+                <textarea id="roomDescription" name="description" placeholder="Description"></textarea><br/>
+                <input id="roomPlaces" name="seats" placeholder="Seats" type="number" required><br/>
+                <input type="file" name="image"><br/>
+                <input type="hidden" name="hotel" value="${hotel.id}">
+                <input id="roomSubmit" type="submit" value="Add Room">
+            </form>
+        </div>
     </c:when>
     <c:otherwise>
     </c:otherwise>

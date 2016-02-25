@@ -76,10 +76,9 @@ public class IndexController {
     public
     @ResponseBody
     boolean checkUser(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                     @RequestParam int roomId,
-                     Model model) {
-        return roomService.isFree(fromDate, toDate, roomId);
+                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
+                      @RequestParam int roomId) {
+        return fromDate.isBefore(toDate) && roomService.isFree(fromDate, toDate, roomId);
     }
 
     @RequestMapping(value = "/addRoom", method = RequestMethod.POST)
@@ -121,7 +120,7 @@ public class IndexController {
         newHotel.setName(name);
         newHotel.setCity(city);
         newHotel.setStars(stars);
-        newHotel.setUser(userService.getUser(owner));
+        newHotel.setUser(userService.get(owner));
         hotelService.saveHotel(newHotel);
         if (!image.isEmpty()) {
             try {
@@ -146,8 +145,7 @@ public class IndexController {
             modelMap.addAttribute("hotels", hotels);
             return "hotelsOwner";
         } else {
-            System.out.println(bookingService.getBookingsByUser(user.getId()).get(0).getStartDate());
-            modelMap.addAttribute("bookings",bookingService.getBookingsByUser(user.getId()));
+            modelMap.addAttribute("bookings", bookingService.getBookingsByUser(user.getId()));
             return "userReservation";
         }
     }

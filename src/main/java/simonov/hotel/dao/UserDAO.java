@@ -7,33 +7,34 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import simonov.hotel.dao.repository.AbstractDAO;
+import simonov.hotel.dao.repository.IUserDAO;
 import simonov.hotel.entity.User;
 
 import java.util.List;
 
 @Repository
-@Transactional
-public class UserDAO {
+public class UserDAO extends AbstractDAO<User,Integer> implements IUserDAO{
 
-    @Autowired
-    SessionFactory sessionFactory;
+//    @Autowired
+//    SessionFactory sessionFactory;
 
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+//    private Session getCurrentSession() {
+//        return sessionFactory.getCurrentSession();
+//    }
 
-    public void save(User user) {
-        getCurrentSession().saveOrUpdate(user);
-    }
+//    public void save(User user) {
+//        getCurrentSession().saveOrUpdate(user);
+//    }
 
-    public User getUser(int id) {
-        return (User) getCurrentSession().get(User.class, id);
-    }
+//    public User getUser(int id) {
+//        return (User) getCurrentSession().get(User.class, id);
+//    }
 
-    @SuppressWarnings("unchecked")
-    public List<User> getUsers() {
-        return getCurrentSession().createCriteria(User.class).list();
-    }
+//    @SuppressWarnings("unchecked")
+//    public List<User> getUsers() {
+//        return getCurrentSession().createCriteria(User.class).list();
+//    }
 
     public User getLoggedUser(String login, String password) {
         Criteria authCriteria = getCurrentSession().createCriteria(User.class);
@@ -41,7 +42,4 @@ public class UserDAO {
                 .add(Restrictions.eq("password", password)).list();
         return users.size() == 1 ? (User) users.get(0) : null;
     }
-
-
-
 }

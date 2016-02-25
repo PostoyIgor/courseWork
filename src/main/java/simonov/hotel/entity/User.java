@@ -1,6 +1,5 @@
 package simonov.hotel.entity;
 
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Hotel> hotels;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
     public User() {

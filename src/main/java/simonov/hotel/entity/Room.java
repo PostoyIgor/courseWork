@@ -29,7 +29,7 @@ public class Room {
     @Column
     private int seats;
 
-    @OneToMany
+    @OneToMany(mappedBy = "room")
     private List<Booking> bookings;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
