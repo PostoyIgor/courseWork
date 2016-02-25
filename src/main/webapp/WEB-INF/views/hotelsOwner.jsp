@@ -30,7 +30,7 @@
     </table>
 </div>
 <c:choose>
-    <c:when test="${user.admin}">
+    <c:when test="${user.hotelOwner}">
         <div class="addHotel">
             <form id="add-hotel" method="post" action="addHotel" enctype="multipart/form-data">
                 <input id="hotelName" type="text" name="name" placeholder="Hotel Name" required>

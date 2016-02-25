@@ -3,7 +3,6 @@ package simonov.hotel.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import simonov.hotel.dao.UserDAO;
 import simonov.hotel.dao.repository.IUserDAO;
 import simonov.hotel.entity.User;
 

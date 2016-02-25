@@ -24,7 +24,7 @@ public class User {
     private String email;
 
     @Column
-    private boolean admin;
+    private boolean hotelOwner;
 
     @Column
     private String password;
@@ -89,12 +89,12 @@ public class User {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public boolean isHotelOwner() {
+        return hotelOwner;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setHotelOwner(boolean admin) {
+        this.hotelOwner = admin;
     }
 
     public String getPhone() {

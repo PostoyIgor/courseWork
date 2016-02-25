@@ -6,15 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Repository
 @SuppressWarnings("unchecked")
-public class AbstractDAO<T,PK extends Serializable> implements GenericDAO<T,PK> {
+public abstract class AbstractDAO<T,PK extends Serializable> implements GenericDAO<T,PK> {
     @Autowired
     SessionFactory sessionFactory;
 
     Class<T> type;
+
+    public AbstractDAO() {
+        Type t = getClass().getGenericSuperclass();
+        ParameterizedType pt = (ParameterizedType) t;
+        type = (Class) pt.getActualTypeArguments()[0];
+    }
 
     @Override
     public PK save(T newInstance) {

@@ -138,8 +138,7 @@ public class IndexController {
     @RequestMapping("/profile")
     public String userProfile(ModelMap modelMap) {
         User user = (User) modelMap.get("user");
-        if (user.isAdmin()) {
-            //TODO retrieve hotels from user or not ? like userService.getHotelsByUser(user)
+        if (user.isHotelOwner()) {
             List<Hotel> hotels = hotelService.getUserHotels(user.getId());
 
             modelMap.addAttribute("hotels", hotels);
