@@ -6,12 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import simonov.hotel.entity.Role;
 import simonov.hotel.entity.User;
 import simonov.hotel.services.UserService;
 
 @Controller
 @EnableWebMvc
-@SessionAttributes(value = "user",names = "user",types = User.class)
+@SessionAttributes(types = User.class)
 public class AuthenticationController {
     @Autowired
     UserService userService;
@@ -47,6 +48,8 @@ public class AuthenticationController {
     }
     @ModelAttribute
     public User createUser() {
+        User user = new User();
+        user.setRole(Role.NotAuthorized);
         return new User();
     }
 }

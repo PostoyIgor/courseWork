@@ -1,5 +1,5 @@
 package simonov.hotel.entity;
 
 public enum Role {
-    CLIENT, HotelOwner;
+    NotAuthorized, CLIENT, HotelOwner;
 }

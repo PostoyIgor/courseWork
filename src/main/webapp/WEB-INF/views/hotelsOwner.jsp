@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="simonov.hotel.entity.Role" %>
 <html>
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
@@ -30,7 +31,7 @@
     </table>
 </div>
 <c:choose>
-    <c:when test="${user.hotelOwner}">
+    <c:when test="${user.role == 'HotelOwner'}">
         <div class="addHotel">
             <form id="add-hotel" method="post" action="addHotel" enctype="multipart/form-data">
                 <input id="hotelName" type="text" name="name" placeholder="Hotel Name" required>

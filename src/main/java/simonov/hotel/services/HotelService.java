@@ -32,8 +32,9 @@ public class HotelService {
     public Map<Hotel,List<Room>> getHotels(String city, String hotelName,
                                            Integer stars, Date fromDate,
                                            Date toDate, Integer numOfTravelers) {
-        if (hotelName==null){ hotelName="";}
-        if (city==null){ city="";}
+
+        if (hotelName.length()==0){ hotelName="";}
+        if (city.length()==0){ city="";}
         return hotelDAO.getHotelsWithFreeRoom(city,hotelName,stars,fromDate,toDate,numOfTravelers);
     }
 

@@ -3,27 +3,9 @@ $(document).ready(function () {
         return new Date().toJSON().split('T')[0];
     });
 
-    //$("#form-booking").find("input.date").change(function () {
-    //    var optionSelected = this;
-    //    $.ajax({
-    //        url: "/check-date",
-    //        type: "GET",
-    //        data: $("#form-booking").serialize(),
-    //        success: function (data) {
-    //            if (data == "FREE") {
-    //                //optionSelected.next().html("<img class='image-ok' src='/resources/images/ok.gif'/>");
-    //                $("<img class='image-ok' src='/resources/images/ok.gif'/>").insertAfter(optionSelected);
-    //            } else {
-    //
-    //            }
-    //        },
-    //        error: function (e) {
-    //            alert("ERROR" + e)
-    //        }
-    //    })
-    //});
     $("#form-booking").submit(function (e){
         e.preventDefault();
+        $(":submit").attr("disabled", true);
         $.ajax({
             url: "/check-date",
             type: "GET",
@@ -35,11 +17,11 @@ $(document).ready(function () {
                     $("#is-free").html("<img class='image-ok' src='/resources/images/error.jpg'/>")
                 }
             }
-        })
+        });
+        $(":submit").removeAttr("disabled");
     });
 
     var on = 0;
-
     function loadPopup() {
         if (on == 0) {
             $("#back").css("opacity", "0.6");
@@ -81,9 +63,6 @@ $(document).ready(function () {
                 } else {
                     $("#ajax-error").text(data);
                 }
-            },
-            error: function (e) {
-                alert(e);
             }
         });
     });

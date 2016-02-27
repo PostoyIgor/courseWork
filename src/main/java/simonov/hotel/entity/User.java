@@ -24,9 +24,6 @@ public class User {
     private String email;
 
     @Column
-    private boolean hotelOwner;
-
-    @Column
     @Enumerated(EnumType.ORDINAL)
     private Role role;
 
@@ -93,14 +90,6 @@ public class User {
         this.email = email;
     }
 
-    public boolean isHotelOwner() {
-        return hotelOwner;
-    }
-
-    public void setHotelOwner(boolean admin) {
-        this.hotelOwner = admin;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -123,5 +112,13 @@ public class User {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

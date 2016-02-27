@@ -36,8 +36,11 @@
         <form:label path="password">Password:</form:label><br/>
         <form:password path="password"/><br/>
         <form:errors path="password" cssClass="error"/>
-        <form:checkbox path="hotelOwner"/>
-        <form:label path="hotelOwner">Hotel Owner</form:label>
+        <form:select path="role">
+            <form:option value="CLIENT">Client</form:option>
+            <form:option value="HotelOwner">Hotel Owner</form:option>
+        </form:select>
+
         <input type="submit" id="btnLogin" value="Register">
     </fieldset>
 </form:form>

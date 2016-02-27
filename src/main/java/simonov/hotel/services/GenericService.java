@@ -1,8 +1,9 @@
-package simonov.hotel.dao.repository;
+package simonov.hotel.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import simonov.hotel.dao.repository.GenericDAO;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,8 +21,8 @@ public abstract class GenericService<T, PK extends Serializable> {
         return this.getGenericDao().getAll();
     }
 
-    public T save(T newInstance) {
-        return (T) this.getGenericDao().save(newInstance);
+    public void save(T newInstance) {
+         this.getGenericDao().save(newInstance);
     }
 
     public void updpate(T updateInstance) {

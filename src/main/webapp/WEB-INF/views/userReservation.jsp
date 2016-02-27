@@ -15,6 +15,7 @@
                     <div>
                         From ${booking.startDate} to ${booking.endDate}<br/>
                        Room number ${booking.room.number}
+                        Hotel ${booking.room.hotel.name}
                     </div>
                 </td>
             </tr>

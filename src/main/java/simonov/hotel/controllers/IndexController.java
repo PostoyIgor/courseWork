@@ -8,9 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import simonov.hotel.entity.Hotel;
-import simonov.hotel.entity.Room;
-import simonov.hotel.entity.User;
+import simonov.hotel.entity.*;
 import simonov.hotel.services.BookingService;
 import simonov.hotel.services.HotelService;
 import simonov.hotel.services.RoomService;
@@ -55,10 +53,9 @@ public class IndexController {
                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate,
                               @RequestParam(required = false) Integer numOfTravelers, Model model) {
-//        model.addAttribute("hotels", hotelService.getHotelsWithPattern(city, hotel, stars, fromDate, toDate, numOfTravelers));
-        Map<Hotel,List<Room>> map = hotelService.getHotels(null,null,5,fromDate,toDate,numOfTravelers);
+        Map<Hotel, List<Room>> map = hotelService.getHotels(city, hotel, stars, fromDate, toDate, numOfTravelers);
         System.out.println(map.size());
-        map.entrySet().stream().forEach(e-> System.out.println(e.getKey().getName()+" : "+e.getValue().size()));
+        map.entrySet().stream().forEach(e -> System.out.println(e.getKey().getName() + " : " + e.getValue().size()));
         return "main";
     }
 
@@ -82,8 +79,20 @@ public class IndexController {
     @ResponseBody
     boolean checkUser(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                      @RequestParam int roomId) {
-        return fromDate.isBefore(toDate) && roomService.isFree(fromDate, toDate, roomId);
+                      @RequestParam int roomId,@ModelAttribute User user) {
+        if (fromDate.isBefore(toDate) && roomService.isFree(fromDate, toDate, roomId)) {
+            if (user.getRole()!=Role.NotAuthorized){
+                Booking booking = new Booking();
+                booking.setStartDate(fromDate);
+                booking.setEndDate(toDate);
+                booking.setRoom(roomService.getRoomById(roomId));
+                booking.setUser(user);
+                bookingService.save(booking);
+                return true;
+            } else return false;
+        } else {
+            return false;
+        }
     }
 
     @RequestMapping(value = "/addRoom", method = RequestMethod.POST)
@@ -141,22 +150,22 @@ public class IndexController {
     }
 
     @RequestMapping("/profile")
-    public String userProfile(ModelMap modelMap) {
-        User user = (User) modelMap.get("user");
-        if (user.isHotelOwner()) {
+    public String userProfile(@ModelAttribute User user, Model model) {
+        if (user.getRole()==Role.HotelOwner) {
             List<Hotel> hotels = hotelService.getUserHotels(user.getId());
-
-            modelMap.addAttribute("hotels", hotels);
+            model.addAttribute("hotels", hotels);
             return "hotelsOwner";
-        } else {
-            modelMap.addAttribute("bookings", bookingService.getBookingsByUser(user.getId()));
+        } else if (user.getRole()==Role.CLIENT) {
+            model.addAttribute("bookings", bookingService.getBookingsByUser(user.getId()));
             return "userReservation";
-        }
+        } else return "main";
     }
 
 
     @ModelAttribute
     public User createUser() {
+        User user = new User();
+        user.setRole(Role.NotAuthorized);
         return new User();
     }
 

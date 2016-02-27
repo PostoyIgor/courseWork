@@ -41,12 +41,19 @@ public class HotelDAO extends AbstractDAO<Hotel,Integer> implements IHotelDAO {
     public Map<Hotel,List<Room>> getHotelsWithFreeRoom(String city, String hotelName,
                                                        Integer stars, Date fromDate,
                                                        Date toDate, Integer numOfTravelers){
+
+//        StringBuilder hotelQuery = new StringBuilder();
+//        hotelQuery.append("select id FROM Hotel ");
+
         Query queryFreeRoom = getCurrentSession().createQuery("from Room where id NOT IN " +
-                "(select room.id from Booking where startDate<=:toDate and endDate>=:fromDate) and seats=:numOfTravelers and hotel.id in " +
+                "(select room.id from Booking where startDate<=:toDate and endDate>=:fromDate)" +
+                " and seats=:numOfTravelers and hotel.id in " +
                 "(select id FROM Hotel WHERE city LIKE :city and name LIKE :hotelName)") ;
         queryFreeRoom.setDate("toDate", toDate);
         queryFreeRoom.setDate("fromDate", fromDate);
         queryFreeRoom.setInteger("numOfTravelers", numOfTravelers);
+        System.out.println("CITY: "+city);
+        System.out.println("HOTEL: "+hotelName);
         queryFreeRoom.setString("city",city+"%");
         queryFreeRoom.setString("hotelName",hotelName+"%");
         List<Room> rooms = queryFreeRoom.list();

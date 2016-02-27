@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ page import="simonov.hotel.entity.Role" %>
 <html>
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
@@ -38,7 +38,7 @@
     </div>
 </div>
 <c:choose>
-    <c:when test="${user.hotelOwner and hotel.user.id eq user.id}">
+    <c:when test="${user.role == 'HotelOwner' and hotel.user.id eq user.id}">
         <div class="add-room-div">
             <form id="add-room" method="post" action="/addRoom" enctype="multipart/form-data">
                 <input id="roomNumber" name="number" type="number" placeholder="№" required><br/>
