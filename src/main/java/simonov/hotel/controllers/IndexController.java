@@ -158,7 +158,7 @@ public class IndexController {
         } else if (user.getRole()==Role.CLIENT) {
             model.addAttribute("bookings", bookingService.getBookingsByUser(user.getId()));
             return "userReservation";
-        } else return "main";
+        } else return "redirect:/";
     }
 
 

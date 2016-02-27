@@ -10,7 +10,6 @@ import simonov.hotel.entity.Booking;
 import java.util.List;
 
 @Repository
-@Transactional
 @SuppressWarnings("unchecked")
 public class BookingDAO extends AbstractDAO<Booking, Integer> implements IBookingDAO {
     @Override
