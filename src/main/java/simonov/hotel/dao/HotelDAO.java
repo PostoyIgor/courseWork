@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 import simonov.hotel.dao.repository.AbstractDAO;
 import simonov.hotel.dao.repository.IHotelDAO;
 import simonov.hotel.entity.Hotel;
+import simonov.hotel.entity.Room;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Repository
 @SuppressWarnings("unchecked")
@@ -35,5 +36,31 @@ public class HotelDAO extends AbstractDAO<Hotel,Integer> implements IHotelDAO {
         Query query = getCurrentSession().createQuery("from Hotel where user.id = :userId");
         query.setInteger("userId", userId);
         return query.list();
+    }
+
+    public Map<Hotel,List<Room>> getHotelsWithFreeRoom(String city, String hotelName,
+                                                       Integer stars, Date fromDate,
+                                                       Date toDate, Integer numOfTravelers){
+        Query queryFreeRoom = getCurrentSession().createQuery("from Room where id NOT IN " +
+                "(select room.id from Booking where startDate<=:toDate and endDate>=:fromDate) and seats=:numOfTravelers and hotel.id in " +
+                "(select id FROM Hotel WHERE city LIKE :city and name LIKE :hotelName)") ;
+        queryFreeRoom.setDate("toDate", toDate);
+        queryFreeRoom.setDate("fromDate", fromDate);
+        queryFreeRoom.setInteger("numOfTravelers", numOfTravelers);
+        queryFreeRoom.setString("city",city+"%");
+        queryFreeRoom.setString("hotelName",hotelName+"%");
+        List<Room> rooms = queryFreeRoom.list();
+        Map<Hotel,List<Room>> hotelListMap = new HashMap<>();
+        rooms.stream().forEach(room-> {
+            Hotel hotel = room.getHotel();
+            if (hotelListMap.get(hotel)==null){
+                List<Room> freeRoom = new ArrayList<>();
+                freeRoom.add(room);
+                hotelListMap.put(hotel,freeRoom);
+            } else {
+                hotelListMap.get(hotel).add(room);
+            }
+        });
+        return hotelListMap;
     }
 }

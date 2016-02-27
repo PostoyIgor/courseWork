@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import simonov.hotel.dao.repository.IHotelDAO;
 import simonov.hotel.entity.Hotel;
+import simonov.hotel.entity.Room;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -26,6 +29,14 @@ public class HotelService {
 
         return hotelDAO.getHotelsWithPattern(city,hotelName,stars,fromDate,toDate,numOfTravelers);
     }
+    public Map<Hotel,List<Room>> getHotels(String city, String hotelName,
+                                           Integer stars, Date fromDate,
+                                           Date toDate, Integer numOfTravelers) {
+        if (hotelName==null){ hotelName="";}
+        if (city==null){ city="";}
+        return hotelDAO.getHotelsWithFreeRoom(city,hotelName,stars,fromDate,toDate,numOfTravelers);
+    }
+
 
     public Hotel getHotelById(int id) {
         return hotelDAO.get(id);

@@ -27,6 +27,10 @@ public class User {
     private boolean hotelOwner;
 
     @Column
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
+
+    @Column
     private String password;
 
     @Column

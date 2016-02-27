@@ -21,7 +21,9 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @EnableWebMvc
@@ -50,10 +52,13 @@ public class IndexController {
     public String searchRooms(@RequestParam(required = false) String city,
                               @RequestParam(required = false) String hotel,
                               @RequestParam(required = false) Integer stars,
-                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
+                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
+                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate,
                               @RequestParam(required = false) Integer numOfTravelers, Model model) {
-        model.addAttribute("hotels", hotelService.getHotelsWithPattern(city, hotel, stars, fromDate, toDate, numOfTravelers));
+//        model.addAttribute("hotels", hotelService.getHotelsWithPattern(city, hotel, stars, fromDate, toDate, numOfTravelers));
+        Map<Hotel,List<Room>> map = hotelService.getHotels(null,null,5,fromDate,toDate,numOfTravelers);
+        System.out.println(map.size());
+        map.entrySet().stream().forEach(e-> System.out.println(e.getKey().getName()+" : "+e.getValue().size()));
         return "main";
     }
 
