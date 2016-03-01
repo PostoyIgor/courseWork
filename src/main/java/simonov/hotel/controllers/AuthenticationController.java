@@ -43,6 +43,7 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout(SessionStatus status) {
+        //TODO ajax!
         status.setComplete();
         return "redirect:/";
     }

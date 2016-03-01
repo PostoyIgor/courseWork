@@ -7,6 +7,7 @@ import simonov.hotel.dao.repository.IRoomDAO;
 import simonov.hotel.entity.Room;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,7 +24,7 @@ public class RoomService {
         return roomDAO.getAll();
     }
 
-    public boolean isFree(LocalDate start,LocalDate end, int roomId){
+    public boolean isFree(LocalDate start, LocalDate end, int roomId){
         return roomDAO.isFree(start, end, roomId);
     }
 

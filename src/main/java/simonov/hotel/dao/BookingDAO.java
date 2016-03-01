@@ -2,7 +2,6 @@ package simonov.hotel.dao;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import simonov.hotel.dao.repository.AbstractDAO;
 import simonov.hotel.dao.repository.IBookingDAO;
 import simonov.hotel.entity.Booking;
