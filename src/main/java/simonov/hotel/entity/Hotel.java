@@ -23,9 +23,6 @@ public class Hotel {
     @ManyToOne
     private City city;
 
-    @ManyToOne
-    private Country country;
-
     @Column
     private String name;
 
@@ -50,10 +47,8 @@ public class Hotel {
     @Column
     private Double rating;
 
-    @ElementCollection
-    @CollectionTable(name="service", joinColumns=@JoinColumn(name="hotel_id"))
-    @Column
-    private List<String> services;
+    @ManyToMany(mappedBy = "hotels")
+    private List<Convenience> conveniences;
 
     public int getId() {
         return id;
@@ -118,14 +113,6 @@ public class Hotel {
         this.description = description;
     }
 
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
     public List<Comment> getComments() {
         return comments;
     }
@@ -142,11 +129,11 @@ public class Hotel {
         this.rating = rating;
     }
 
-    public List<String> getServices() {
-        return services;
+    public List<Convenience> getConveniences() {
+        return conveniences;
     }
 
-    public void setServices(List<String> services) {
-        this.services = services;
+    public void setConveniences(List<Convenience> conveniences) {
+        this.conveniences = conveniences;
     }
 }

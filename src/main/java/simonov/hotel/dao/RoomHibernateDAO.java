@@ -4,7 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import simonov.hotel.dao.interfaces.IRoomDAO;
+import simonov.hotel.dao.interfaces.RoomDAO;
 import simonov.hotel.entity.Booking;
 import simonov.hotel.entity.Room;
 
@@ -13,7 +13,12 @@ import java.util.List;
 
 @Repository
 @SuppressWarnings("unchecked")
-public class RoomDAO extends AbstractDAO<Room,Integer> implements IRoomDAO {
+public class RoomHibernateDAO extends AbstractDAO<Room,Integer> implements RoomDAO {
+
+    public RoomHibernateDAO() {
+        super(Room.class);
+    }
+
     @Override
     public boolean isFree(LocalDate start, LocalDate end, int roomId){
         Query query = getCurrentSession().createQuery("from Booking where room.id = :roomId");

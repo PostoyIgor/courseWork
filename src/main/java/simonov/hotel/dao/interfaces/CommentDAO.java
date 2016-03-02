@@ -4,7 +4,7 @@ import simonov.hotel.entity.Comment;
 
 import java.util.List;
 
-public interface ICommentDAO extends GenericDAO<Comment, Integer> {
+public interface CommentDAO extends GenericDAO<Comment, Integer> {
     List<Comment> getCommentsByHotel(Integer hotelId);
     Double getRatingByHotel(Integer hotelId);
 }

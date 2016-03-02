@@ -19,11 +19,15 @@ public abstract class AbstractDAO<T,PK extends Serializable> implements GenericD
 
     Class<T> type;
 
-    public AbstractDAO() {
-        Type t = getClass().getGenericSuperclass();
-        ParameterizedType pt = (ParameterizedType) t;
-        type = (Class) pt.getActualTypeArguments()[0];
+    public AbstractDAO(Class<T> type){
+        this.type = type;
     }
+
+//    public AbstractDAO() {
+//        Type t = getClass().getGenericSuperclass();
+//        ParameterizedType pt = (ParameterizedType) t;
+//        type = (Class) pt.getActualTypeArguments()[0];
+//    }
 
     @Override
     public void save(T newInstance) {

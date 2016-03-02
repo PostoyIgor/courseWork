@@ -24,6 +24,10 @@ public class Booking {
     @Column
     private LocalDate endDate;
 
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
+
     public int getId() {
         return id;
     }
@@ -62,5 +66,13 @@ public class Booking {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

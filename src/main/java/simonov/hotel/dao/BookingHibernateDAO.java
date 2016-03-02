@@ -2,14 +2,19 @@ package simonov.hotel.dao;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
-import simonov.hotel.dao.interfaces.IBookingDAO;
+import simonov.hotel.dao.interfaces.BookingDAO;
 import simonov.hotel.entity.Booking;
 
 import java.util.List;
 
 @Repository
 @SuppressWarnings("unchecked")
-public class BookingDAO extends AbstractDAO<Booking, Integer> implements IBookingDAO {
+public class BookingHibernateDAO extends AbstractDAO<Booking, Integer> implements BookingDAO {
+
+    public BookingHibernateDAO() {
+        super(Booking.class);
+    }
+
     @Override
     public List<Booking> getBookingsByUser(int userId) {
         Query query = getCurrentSession().createQuery("from Booking where user.id = :userId");
