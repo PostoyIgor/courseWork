@@ -33,7 +33,8 @@ public class HotelDAO extends AbstractDAO<Hotel, Integer> implements IHotelDAO {
                 .setParameter("seats", numOfTravelers);
         Criteria hotelCriteria = session.createCriteria(Hotel.class);
         if (city.length() != 0) {
-            hotelCriteria.add(Restrictions.like("city", city + "%"));
+            hotelCriteria.createAlias("city","city");
+            hotelCriteria.add(Restrictions.eq("city.name", city));
         }
         if (hotelName.length() != 0) {
             hotelCriteria.add(Restrictions.like("name", hotelName + "%"));

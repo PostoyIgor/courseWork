@@ -3,7 +3,6 @@ package simonov.hotel.entity;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,13 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
-    @Column
-    private String city;
+
+    @ManyToOne
+    private City city;
+
+    @ManyToOne
+    private Country country;
+
     @Column
     private String name;
 
@@ -59,11 +63,11 @@ public class Hotel {
         this.id = id;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -112,5 +116,37 @@ public class Hotel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public List<String> getServices() {
+        return services;
+    }
+
+    public void setServices(List<String> services) {
+        this.services = services;
     }
 }
