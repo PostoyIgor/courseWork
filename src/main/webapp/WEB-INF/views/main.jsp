@@ -6,7 +6,6 @@
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <%--<script src="<c:url value="/resources/js/main.js" />"></script>--%>
     <script src="<c:url value="/resources/js/divPopUp.js" />"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Hotel Booking Service</title>
@@ -42,7 +41,7 @@
 <div class="right-panel">
     <div class="filter">
         <span><h5>Filtering Room</h5></span>
-        <form id="filter-form" action="search">
+        <form id="filter-form" action="search" onsubmit="return checkDate()">
             <label for="city">City</label>
             <input id="city" type="text" name="city">
             <label for="hotel">Hotel</label>
@@ -57,12 +56,12 @@
                 <option value="5">5</option>
             </select>
             <label id="fromDate">From date</label>
-            <input type="date" name="fromDate" class="date" data-date-split-input="true">
+            <input type="date" name="fromDate" class="date" data-date-split-input="true" required>
             <label id="toDate">To date</label>
-            <input type="date" name="toDate" class="date" data-date-split-input="true">
+            <input type="date" name="toDate" class="date" data-date-split-input="true" required>
 
             <label id="numOfTravelers">Number of travelers</label>
-            <input type="number" name="numOfTravelers" min="1" max="4">
+            <input type="number" name="numOfTravelers" min="1" max="4" required>
             <input type="submit" value="Search" name="searchSubmit">
         </form>
     </div>
@@ -81,6 +80,7 @@
                 <td>
                     <div>
                         <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city}
+                        <p>Available rooms: ${hotel.rooms.size()}</p>
                     </div>
                 </td>
             </tr>

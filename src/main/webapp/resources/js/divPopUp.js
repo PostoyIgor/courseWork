@@ -3,25 +3,35 @@ $(document).ready(function () {
         return new Date().toJSON().split('T')[0];
     });
 
-    $("#form-booking").submit(function (e){
+    $('.hotel-href').click(function(e){
+
+    });
+
+    $("#form-booking").submit(function (e) {
         e.preventDefault();
-        $(":submit").attr("disabled", true);
-        $.ajax({
-            url: "/check-date",
-            type: "GET",
-            data: $("#form-booking").serialize(),
-            success: function(data){
-                if (data){
-                    $("#is-free").html("<img class='image-ok' src='/resources/images/ok.gif'/>")
-                } else {
-                    $("#is-free").html("<img class='image-ok' src='/resources/images/error.jpg'/>")
+        var userRole = $('input#userRole').val();
+        if (userRole == "HotelOwner" || userRole=='CLIENT') {
+            $(":submit").attr("disabled", true);
+            $.ajax({
+                url: "/check-date",
+                type: "GET",
+                data: $("#form-booking").serialize(),
+                success: function (data) {
+                    if (data) {
+                        $("#is-free").html("<img class='image-ok' src='/resources/images/ok.gif'/>")
+                    } else {
+                        $("#is-free").html("<img class='image-ok' src='/resources/images/error.jpg'/>")
+                    }
                 }
-            }
-        });
-        $(":submit").removeAttr("disabled");
+            });
+            $(":submit").removeAttr("disabled");
+        } else {
+            loadPopup();
+        }
     });
 
     var on = 0;
+
     function loadPopup() {
         if (on == 0) {
             $("#back").css("opacity", "0.6");
@@ -51,7 +61,7 @@ $(document).ready(function () {
     $("#loginForm").submit(function (e) {
         e.preventDefault();
         $.ajax({
-            url: 'check-user',
+            url: '/check-user',
             type: 'POST',
             data: $("#loginForm").serialize(),
             success: function (data) {

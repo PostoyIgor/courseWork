@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <html>
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
@@ -7,7 +8,37 @@
     <script src="<c:url value="/resources/js/divPopUp.js" />"></script>
     <title>Room Description</title>
 </head>
-<body><div class="right-panel">
+<body><c:choose>
+    <c:when test="${user.login==null}">
+        <a class="menuLink" href="/registration">Sign In</a><a href="#" class="menuLink" id="showpopup">Log In</a>
+        <div id="popup">
+            <div>
+                <form:form method="POST" commandName="user" action="check-user" id="loginForm">
+                    <h4>Please enter<br/></h4>
+                    <form:label path="login">Login:</form:label><br/>
+                    <form:input path="login"/>
+                    <form:errors path="login" cssClass="error"/><br/>
+                    <form:label path="password">Password:</form:label><br/>
+                    <form:password path="password"/>
+                    <form:errors path="password" cssClass="error"/><br/>
+
+                    <input type="submit" id="btnLogin" value="Login">
+                    <span id="ajax-error"></span>
+                    <span>Or <a href="/registration">Sign in</a> </span>
+                </form:form>
+            </div>
+            <div class="close">[X]</div>
+        </div>
+        <div id="back"></div>
+    </c:when>
+    <c:otherwise>
+        <a class="menuLink" href="/profile">${user.login} Profile</a>
+        <a class="menuLink" href="/logout">Logout</a>
+    </c:otherwise>
+</c:choose>
+
+
+<div class="right-panel">
 </div>
 <div id="hotel-info">
     <p>Hotel : ${hotel.name}
@@ -27,6 +58,8 @@
         <input type="date" name="fromDate" id="fromDate" class="date" data-date-split-input="true" required><br/>
         <input type="date" name="toDate" id="toDate" class="date" data-date-split-input="true" required><br/>
         <input name="roomId" id="roomId" value="${room.id}" hidden>
+        <input name="userRole" id="userRole" value="${user.role}" hidden>
+
         <input type="submit" value="Booking" name="booking">
     </form>
     <div id="is-free"></div>

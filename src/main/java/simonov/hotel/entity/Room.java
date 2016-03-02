@@ -1,10 +1,6 @@
 package simonov.hotel.entity;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
-import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -32,7 +28,7 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_id" )
     private Hotel hotel;
 

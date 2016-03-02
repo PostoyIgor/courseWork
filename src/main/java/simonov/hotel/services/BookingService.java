@@ -3,7 +3,7 @@ package simonov.hotel.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import simonov.hotel.dao.repository.IBookingDAO;
+import simonov.hotel.dao.interfaces.IBookingDAO;
 import simonov.hotel.entity.Booking;
 
 import java.util.List;

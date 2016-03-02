@@ -1,4 +1,4 @@
-package simonov.hotel.dao.repository;
+package simonov.hotel.dao.interfaces;
 
 import simonov.hotel.entity.User;
 

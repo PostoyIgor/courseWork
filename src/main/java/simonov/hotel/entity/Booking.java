@@ -1,10 +1,7 @@
 package simonov.hotel.entity;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 public class Booking {

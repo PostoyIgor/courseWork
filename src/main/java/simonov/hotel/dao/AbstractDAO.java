@@ -1,9 +1,10 @@
-package simonov.hotel.dao.repository;
+package simonov.hotel.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import simonov.hotel.dao.interfaces.GenericDAO;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;

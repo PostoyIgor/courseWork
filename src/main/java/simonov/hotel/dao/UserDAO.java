@@ -3,8 +3,7 @@ package simonov.hotel.dao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import simonov.hotel.dao.repository.AbstractDAO;
-import simonov.hotel.dao.repository.IUserDAO;
+import simonov.hotel.dao.interfaces.IUserDAO;
 import simonov.hotel.entity.User;
 
 import java.util.List;

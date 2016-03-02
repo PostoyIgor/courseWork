@@ -1,13 +1,20 @@
 package simonov.hotel.entity;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@FilterDef(name="RoomFilter",
+        parameters={
+                @ParamDef( name = "startDate", type ="java.time.LocalDate"),
+                @ParamDef( name = "endDate", type ="java.time.LocalDate"),
+                @ParamDef( name = "seats", type ="integer")
+        } )
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,15 +24,32 @@ public class Hotel {
     private String city;
     @Column
     private String name;
+
+    @Column
+    private String description;
+
     @Column
     private int stars;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
+    @Filter(name = "RoomFilter", condition = "id NOT IN (select b.room_id from Booking b " +
+            "where b.startDate<=:endDate and b.endDate>=:startDate) AND seats >= :seats")
     private List<Room> rooms;
 
     @ManyToOne
     private User user;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<Comment> comments;
+
+    @Column
+    private Double rating;
+
+    @ElementCollection
+    @CollectionTable(name="service", joinColumns=@JoinColumn(name="hotel_id"))
+    @Column
+    private List<String> services;
 
     public int getId() {
         return id;
@@ -80,5 +104,13 @@ public class Hotel {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -1,9 +1,10 @@
 package simonov.hotel.dao;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import simonov.hotel.dao.repository.AbstractDAO;
-import simonov.hotel.dao.repository.IRoomDAO;
+import simonov.hotel.dao.interfaces.IRoomDAO;
 import simonov.hotel.entity.Booking;
 import simonov.hotel.entity.Room;
 
@@ -24,5 +25,12 @@ public class RoomDAO extends AbstractDAO<Room,Integer> implements IRoomDAO {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<Room> getRoomsByHotel(int hotelId) {
+        Criteria criteria = getCurrentSession().createCriteria(Room.class);
+        criteria.add(Restrictions.eq("hotel.id",hotelId));
+        return criteria.list();
     }
 }

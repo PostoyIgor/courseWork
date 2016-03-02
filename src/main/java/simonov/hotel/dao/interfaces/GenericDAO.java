@@ -1,4 +1,4 @@
-package simonov.hotel.dao.repository;
+package simonov.hotel.dao.interfaces;
 
 import java.io.Serializable;
 import java.util.List;
