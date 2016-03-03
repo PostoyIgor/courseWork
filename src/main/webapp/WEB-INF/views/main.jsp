@@ -80,7 +80,7 @@
                 <td>
                     <div>
                         <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city}
-                        Available rooms: ${hotel.rooms.size()}
+                        <p>Available rooms: ${hotel.rooms.size()}</p>
                     </div>
                 </td>
             </tr>

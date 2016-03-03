@@ -3,14 +3,17 @@ package simonov.hotel.dao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import simonov.hotel.dao.repository.AbstractDAO;
-import simonov.hotel.dao.repository.IUserDAO;
+import simonov.hotel.dao.interfaces.UserDAO;
 import simonov.hotel.entity.User;
 
 import java.util.List;
 
 @Repository
-public class UserDAO extends AbstractDAO<User,Integer> implements IUserDAO{
+public class UserHibernateDAO extends AbstractDAO<User,Integer> implements UserDAO {
+
+    public UserHibernateDAO() {
+        super(User.class);
+    }
 
     public User getLoggedUser(String login, String password) {
         Criteria authCriteria = getCurrentSession().createCriteria(User.class);

@@ -19,6 +19,7 @@
     <div class="main">
         <table>
             <c:forEach items="${hotel.rooms}" var="room">
+            <%--<c:forEach items="${rooms}" var="room">--%>
                 <tr class="room-table">
                     <td>
                         <img onerror="this.onerror=null;this.src='../resources/images/rooms/noImage.jpg'"
@@ -47,7 +48,7 @@
                 <textarea id="roomDescription" name="description" placeholder="Description"></textarea><br/>
                 <input id="roomPlaces" name="seats" placeholder="Seats" type="number" min="1" max="4" required><br/>
                 <input type="file" name="image"><br/>
-                <input type="hidden" name="hotel" value="${hotel.id}">
+                <input type="hidden" name="hotelId" value="${hotel.id}">
                 <input id="roomSubmit" type="submit" value="Add Room">
             </form>
         </div>

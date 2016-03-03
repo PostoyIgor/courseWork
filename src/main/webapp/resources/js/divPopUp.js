@@ -3,6 +3,10 @@ $(document).ready(function () {
         return new Date().toJSON().split('T')[0];
     });
 
+    $('.hotel-href').click(function(e){
+
+    });
+
     $("#form-booking").submit(function (e) {
         e.preventDefault();
         var userRole = $('input#userRole').val();

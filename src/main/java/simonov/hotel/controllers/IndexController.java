@@ -14,15 +14,15 @@ import simonov.hotel.services.RoomService;
 import simonov.hotel.services.UserService;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @EnableWebMvc
-@SessionAttributes(names = "user", types = User.class)
+@SessionAttributes({"user", "hotels"})
 public class IndexController {
 
     @Autowired
@@ -38,34 +38,38 @@ public class IndexController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printHotels(@ModelAttribute User user, Model model) {
-
         model.addAttribute("hotels", hotelService.getHotelList());
-        model.addAttribute("user", user);
         return "main";
     }
 
     @RequestMapping(value = "/search")
-    public String searchRooms(@RequestParam(required = false) String city,
-                              @RequestParam(required = false) String hotel,
-                              @RequestParam(required = false) Integer stars,
-                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                              @RequestParam(required = false) Integer numOfTravelers, Model model) {
+    public String search(@RequestParam(required = false) String city,
+                         @RequestParam(required = false) String hotel,
+                         @RequestParam(required = false) Integer stars,
+                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
+                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
+                         @RequestParam(required = false) Integer numOfTravelers,
+                         Model model) {
         model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(city, hotel, stars, fromDate, toDate, numOfTravelers));
         return "main";
     }
 
-
     @RequestMapping(value = "/hotel/{id}")
-    public String hotelInfo(@PathVariable int id, Model model) {
-        model.addAttribute("hotel", hotelService.getHotelById(id));
+    public String searchHotel(@PathVariable int id, Model model, @ModelAttribute("hotels") ArrayList<Hotel> hotels) {
+        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
+        model.addAttribute("hotel", hotelItem);
+        model.addAttribute("rooms", hotelItem.getRooms()); //TODO PROBLEM! when i come from /profile
         return "hotelInfo";
     }
 
     @RequestMapping(value = "/hotel/{hotelId}/roomDetails/{roomId}")
     public String roomInfo(@PathVariable int hotelId, @PathVariable int roomId, Model model) {
-        model.addAttribute("hotel", hotelService.getHotelById(hotelId));
-        model.addAttribute("room", roomService.getRoomById(roomId));
+        Room room = roomService.getRoomById(roomId);
+        if (hotelId != room.getHotel().getId()) {
+            return "error";
+        }
+        model.addAttribute("hotel", room.getHotel());
+        model.addAttribute("room", room);
         return "roomInfo";
     }
 
@@ -97,15 +101,15 @@ public class IndexController {
                           @RequestParam String description,
                           @RequestParam int price,
                           @RequestParam int seats,
-                          @RequestParam int hotel,
-                          @RequestParam MultipartFile image, HttpSession session) {
+                          @RequestParam int hotelId,
+                          @RequestParam MultipartFile image) {
         Room room = new Room();
         room.setType(type);
         room.setPrice(price);
         room.setSeats(seats);
         room.setDescription(description);
         room.setNumber(number);
-        Hotel currentHotel = hotelService.getHotelById(hotel);
+        Hotel currentHotel = hotelService.getHotelById(hotelId);
         room.setHotel(currentHotel);
         roomService.saveRoom(room);
         if (!image.isEmpty()) {
@@ -125,7 +129,7 @@ public class IndexController {
                            @RequestParam String city,
                            @RequestParam int stars,
                            @RequestParam int owner,
-                           @RequestParam MultipartFile image, HttpSession session) {
+                           @RequestParam MultipartFile image) {
         Hotel newHotel = new Hotel();
         newHotel.setName(name);
         newHotel.setCity(city);
@@ -158,11 +162,17 @@ public class IndexController {
     }
 
 
-    @ModelAttribute
+    @ModelAttribute("user")
     public User createUser() {
         User user = new User();
         user.setRole(Role.NotAuthorized);
         return new User();
+    }
+
+    @ModelAttribute("hotels")
+    public ArrayList<Hotel> getHotels() {
+        ArrayList<Hotel> hotelList = new ArrayList<>();
+        return hotelList;
     }
 
     @ModelAttribute

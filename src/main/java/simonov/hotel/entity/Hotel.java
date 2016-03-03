@@ -3,7 +3,6 @@ package simonov.hotel.entity;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +19,20 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
-    @Column
-    private String city;
+
+    @ManyToOne
+    private City city;
+
     @Column
     private String name;
+
+    @Column
+    private String description;
+
     @Column
     private int stars;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     @Filter(name = "RoomFilter", condition = "id NOT IN (select b.room_id from Booking b " +
             "where b.startDate<=:endDate and b.endDate>=:startDate) AND seats >= :seats")
@@ -35,6 +40,15 @@ public class Hotel {
 
     @ManyToOne
     private User user;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<Comment> comments;
+
+    @Column
+    private Double rating;
+
+    @ManyToMany(mappedBy = "hotels")
+    private List<Convenience> conveniences;
 
     public int getId() {
         return id;
@@ -44,11 +58,11 @@ public class Hotel {
         this.id = id;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -89,5 +103,37 @@ public class Hotel {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public List<Convenience> getConveniences() {
+        return conveniences;
+    }
+
+    public void setConveniences(List<Convenience> conveniences) {
+        this.conveniences = conveniences;
     }
 }
