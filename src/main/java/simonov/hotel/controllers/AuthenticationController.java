@@ -8,7 +8,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import simonov.hotel.entity.Role;
 import simonov.hotel.entity.User;
-import simonov.hotel.services.UserService;
+import simonov.hotel.services.interfaces.UserService;
 
 @Controller
 @EnableWebMvc

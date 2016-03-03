@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import simonov.hotel.entity.*;
-import simonov.hotel.services.BookingService;
-import simonov.hotel.services.HotelService;
-import simonov.hotel.services.RoomService;
-import simonov.hotel.services.UserService;
+import simonov.hotel.services.interfaces.BookingService;
+import simonov.hotel.services.interfaces.HotelService;
+import simonov.hotel.services.interfaces.RoomService;
+import simonov.hotel.services.interfaces.UserService;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -43,22 +43,23 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/search")
-    public String search(@RequestParam(required = false) String city,
+    public String search(@RequestParam(required = false) String country,
+                         @RequestParam(required = false) String city,
                          @RequestParam(required = false) String hotel,
-                         @RequestParam(required = false) Integer stars,
                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
                          @RequestParam(required = false) Integer numOfTravelers,
                          Model model) {
-        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(city, hotel, stars, fromDate, toDate, numOfTravelers));
+        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(country,city, hotel, fromDate, toDate, numOfTravelers));
         return "main";
     }
 
     @RequestMapping(value = "/hotel/{id}")
-    public String searchHotel(@PathVariable int id, Model model, @ModelAttribute("hotels") ArrayList<Hotel> hotels) {
-        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
-        model.addAttribute("hotel", hotelItem);
-        model.addAttribute("rooms", hotelItem.getRooms()); //TODO PROBLEM! when i come from /profile
+    public String searchHotel(@PathVariable int id, Model model) {
+        Hotel hotel = hotelService.getHotelById(id);
+        model.addAttribute("hotel", hotel);
+        List<Room> rooms = roomService.getRoomsByHotel(id);
+        model.addAttribute("rooms", rooms);
         return "hotelInfo";
     }
 
@@ -132,7 +133,8 @@ public class IndexController {
                            @RequestParam MultipartFile image) {
         Hotel newHotel = new Hotel();
         newHotel.setName(name);
-        newHotel.setCity(city);
+
+//        newHotel.setCity(city);
         newHotel.setStars(stars);
         newHotel.setUser(userService.get(owner));
         hotelService.saveHotel(newHotel);

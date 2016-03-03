@@ -32,10 +32,9 @@ public class Hotel {
     @Column
     private int stars;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "hotel")
     @Filter(name = "RoomFilter", condition = "id NOT IN (select b.room_id from Booking b " +
-            "where b.startDate<=:endDate and b.endDate>=:startDate) AND seats >= :seats")
+            "where b.startDate<=:endDate and b.endDate>=:startDate) AND seats = :seats")
     private List<Room> rooms;
 
     @ManyToOne

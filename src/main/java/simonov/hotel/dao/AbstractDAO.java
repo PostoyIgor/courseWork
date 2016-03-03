@@ -1,7 +1,9 @@
 package simonov.hotel.dao;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import simonov.hotel.dao.interfaces.GenericDAO;
@@ -23,12 +25,6 @@ public abstract class AbstractDAO<T,PK extends Serializable> implements GenericD
         this.type = type;
     }
 
-//    public AbstractDAO() {
-//        Type t = getClass().getGenericSuperclass();
-//        ParameterizedType pt = (ParameterizedType) t;
-//        type = (Class) pt.getActualTypeArguments()[0];
-//    }
-
     @Override
     public void save(T newInstance) {
          getCurrentSession().save(newInstance);
@@ -42,6 +38,20 @@ public abstract class AbstractDAO<T,PK extends Serializable> implements GenericD
     @Override
     public List<T> getAll() {
         return getCurrentSession().createCriteria(type).list();
+    }
+
+    @Override
+    public List<T> getListByPage(int firstResult, int maxResult) {
+        Criteria criteria = getCurrentSession().createCriteria(type);
+        criteria.setFirstResult(firstResult);
+        criteria.setMaxResults(maxResult);
+        return criteria.list();
+    }
+    @Override
+    public Long getTotalCount(){
+        Criteria criteriaCount = getCurrentSession().createCriteria(type);
+        criteriaCount.setProjection(Projections.rowCount());
+        return (Long) criteriaCount.uniqueResult();
     }
 
     @Override
