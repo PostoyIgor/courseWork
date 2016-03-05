@@ -1,0 +1,29 @@
+package simonov.hotel.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import simonov.hotel.dao.interfaces.CityDAO;
+import simonov.hotel.entity.City;
+import simonov.hotel.services.interfaces.CityService;
+
+import java.util.List;
+
+public class CityServiceImpl implements CityService {
+    @Autowired
+    CityDAO cityDAO;
+
+    @Override
+    public List<City> getCitiesByCriteria(String city, Integer countryId) {
+        List<City> cityList;
+        if (countryId != null && countryId > 0) {
+            cityList = cityDAO.getCitiesByCountryAndName(city, countryId);
+        } else {
+            cityList = cityDAO.getCitiesByCriteria(city);
+        }
+        return cityList;
+    }
+
+    @Override
+    public City getCityByName(String cityName) {
+        return cityDAO.getCityByName(cityName);
+    }
+}

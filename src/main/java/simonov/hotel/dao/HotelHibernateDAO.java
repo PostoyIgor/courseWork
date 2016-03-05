@@ -59,24 +59,21 @@ public class HotelHibernateDAO extends AbstractDAO<Hotel, Integer> implements Ho
     }
 
     @Override
-    public List<Hotel> getHotelsByCriteria(String country, String city, String hotelName, int firstResult, int maxResult) {
+    public List<Hotel> getHotelsByCriteria(Integer countryId, Integer cityId, String hotelName) {
         Criteria hotelCriteria = getCurrentSession().createCriteria(Hotel.class);
 
-        if (city.length() != 0) {
+        if (cityId != null && cityId > 0) {
             hotelCriteria.createAlias("city", "city");
-            hotelCriteria.add(Restrictions.eq("city.name", city));
+            hotelCriteria.add(Restrictions.eq("city.id", cityId));
         }
 
-        if (country.length() != 0) {
+        if (countryId != null && countryId > 0) {
             hotelCriteria.createAlias("city", "city");
             hotelCriteria.createAlias("city.country", "country");
-            hotelCriteria.add(Restrictions.eq("country.name", country));
+            hotelCriteria.add(Restrictions.eq("country.id", countryId));
         }
-        if (hotelName.length() != 0) {
-            hotelCriteria.add(Restrictions.like("name", hotelName + "%"));
-        }
-        hotelCriteria.setFirstResult(firstResult);
-        hotelCriteria.setMaxResults(maxResult);
+
+        hotelCriteria.add(Restrictions.ilike("name", hotelName,MatchMode.ANYWHERE));
         List<Hotel> hotelList = hotelCriteria.list();
         hotelList.stream().forEach(hotel -> System.out.println(hotel.getName()));
         return hotelCriteria.list();

@@ -14,7 +14,7 @@ public interface HotelDAO extends GenericDAO<Hotel, Integer> {
                                       LocalDate starDate, LocalDate endDate, Integer numOfTravelers);
 
 
-    List<Hotel> getHotelsByCriteria(String country, String city, String hotelName, int firstResult, int maxResult);
+    List<Hotel> getHotelsByCriteria(Integer countryId, Integer cityId, String hotelName);
 
     List<Hotel> getHotelsByDate(String country, String city, String hotelName, LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats, int firstResult, int maxResult);
 }

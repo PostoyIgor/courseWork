@@ -6,6 +6,8 @@ import org.hibernate.criterion.Restrictions;
 import simonov.hotel.dao.interfaces.CountryDAO;
 import simonov.hotel.entity.Country;
 
+import java.util.List;
+
 public class CountryHibernateDAO extends AbstractDAO<Country, Integer> implements CountryDAO {
 
     public CountryHibernateDAO() {
@@ -15,7 +17,14 @@ public class CountryHibernateDAO extends AbstractDAO<Country, Integer> implement
     @Override
     public Country getCountryByName(String countryName) {
         Criteria criteria = getCurrentSession().createCriteria(Country.class);
-        criteria.add(Restrictions.ilike("name", countryName, MatchMode.START));
+        criteria.add(Restrictions.eq("name", countryName));
         return (Country) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<Country> getCountriesByNameCriteria(String nameCriteria) {
+        Criteria criteria = getCurrentSession().createCriteria(Country.class);
+        criteria.add(Restrictions.ilike("name",nameCriteria,MatchMode.START));
+        return criteria.list();
     }
 }

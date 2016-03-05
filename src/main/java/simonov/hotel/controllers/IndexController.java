@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import simonov.hotel.entity.*;
-import simonov.hotel.services.interfaces.BookingService;
-import simonov.hotel.services.interfaces.HotelService;
-import simonov.hotel.services.interfaces.RoomService;
-import simonov.hotel.services.interfaces.UserService;
+import simonov.hotel.services.interfaces.*;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -35,6 +32,8 @@ public class IndexController {
     BookingService bookingService;
     @Autowired
     ServletContext servletContext;
+    @Autowired
+    CityService cityService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printHotels(@ModelAttribute User user, Model model) {
@@ -42,17 +41,7 @@ public class IndexController {
         return "main";
     }
 
-    @RequestMapping(value = "/search")
-    public String search(@RequestParam(required = false) String country,
-                         @RequestParam(required = false) String city,
-                         @RequestParam(required = false) String hotel,
-                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                         @RequestParam(required = false) Integer numOfTravelers,
-                         Model model) {
-        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(country,city, hotel, fromDate, toDate, numOfTravelers));
-        return "main";
-    }
+
 
     @RequestMapping(value = "/hotel/{id}")
     public String searchHotel(@PathVariable int id, Model model) {
