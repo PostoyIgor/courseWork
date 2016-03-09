@@ -20,15 +20,18 @@ public class RoomHibernateDAO extends AbstractDAO<Room, Integer> implements Room
     }
 
     @Override
-    public boolean isFree(LocalDate start, LocalDate end, int roomId) {
-        Query query1 = getCurrentSession().createQuery("from Room as r where r.id = :roomId and " +
-                " not exists (from Booking as b where b.room.id=:roomId" +
-                " and (startDate<=:endDate and endDate>=:startDate))");
-        query1.setParameter("roomId", roomId);
-        query1.setParameter("startDate", start);
-        query1.setParameter("endDate", end);
-        Room room = (Room) query1.uniqueResult();
-        return room != null;
+    public boolean isFree(LocalDate startDate, LocalDate endDate, int roomId) {
+        Query query = getCurrentSession().createQuery("from Booking where room.id = :roomId and (endDate>=:startDate and startDate<=:endDate)");
+        query.setInteger("roomId", roomId);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+
+        List<Booking> bookings = query.list();
+        if (bookings.size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -36,5 +39,14 @@ public class RoomHibernateDAO extends AbstractDAO<Room, Integer> implements Room
         Criteria criteria = getCurrentSession().createCriteria(Room.class);
         criteria.add(Restrictions.eq("hotel.id", hotelId));
         return criteria.list();
+    }
+
+    @Override
+    public List<Room> getRoomsByType(int hotelId, String type) {
+        Query query = getCurrentSession().createQuery("from Room as room where room.hotel.id = :hotelId and room.type = :type");
+        query.setInteger("hotelId", hotelId);
+        query.setString("type", type);
+        List<Room> rooms = query.list();
+        return rooms;
     }
 }

@@ -20,7 +20,7 @@ public class Room {
     private String description;
 
     @Column
-    private int price;
+    private Double price;
 
     @Column
     private int seats;
@@ -28,15 +28,15 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_id" )
     private Hotel hotel;
 
-    public int getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
     public int getId() {

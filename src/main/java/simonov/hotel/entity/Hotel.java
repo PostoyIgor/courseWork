@@ -11,7 +11,8 @@ import java.util.List;
 @FilterDef(name = "RoomFilter",
         parameters = {
                 @ParamDef(name = "startDate", type = "java.time.LocalDate"),
-                @ParamDef(name = "endDate", type = "java.time.LocalDate")
+                @ParamDef(name = "endDate", type = "java.time.LocalDate"),
+
         })
 public class Hotel {
     @Id
@@ -31,7 +32,8 @@ public class Hotel {
     @Column
     private int stars;
 
-    @OneToMany(mappedBy = "hotel")
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
     @Filter(name = "RoomFilter", condition = "id NOT IN (select b.room_id from Booking b " +
             "where b.startDate<=:endDate and b.endDate>=:startDate)")
     private List<Room> rooms;
@@ -39,7 +41,7 @@ public class Hotel {
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "hotel")
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     @Column
