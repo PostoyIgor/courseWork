@@ -2,11 +2,12 @@ package simonov.hotel.services.interfaces;
 
 import org.springframework.stereotype.Service;
 import simonov.hotel.entity.Booking;
+import simonov.hotel.entity.Room;
 
 import java.util.List;
 @Service
 public interface BookingService {
-    boolean saveAll(List<Booking> bookings);
+    List<Room> saveAll(List<Booking> bookings);
     List<Booking> getBookingsByUser(int userId);
     List<Booking> getActualBookingsByUser(int userId);
     List<Booking> getActualBookingsByHotel(int hotelId);
