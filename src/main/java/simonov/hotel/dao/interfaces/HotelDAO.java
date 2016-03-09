@@ -10,11 +10,10 @@ public interface HotelDAO extends GenericDAO<Hotel, Integer> {
 
     List<Hotel> getHotelsByUser(Integer userId);
 
-    List<Hotel> getHotelsWithFreeRoom(String country, String city, String hotelName,
-                                      LocalDate starDate, LocalDate endDate, Integer numOfTravelers);
+    List<Hotel> getHotelsWithFreeRoom(int country, int city, int hotelName,
+                                      LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats);
 
+    List<Hotel> getHotelsByCity(int city);
 
-    List<Hotel> getHotelsByCriteria(Integer countryId, Integer cityId, String hotelName);
-
-    List<Hotel> getHotelsByDate(String country, String city, String hotelName, LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats, int firstResult, int maxResult);
+    List<Hotel> getHotelsByCountry(int country);
 }

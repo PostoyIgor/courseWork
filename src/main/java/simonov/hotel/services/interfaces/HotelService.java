@@ -12,20 +12,22 @@ public interface HotelService {
 
     List<Hotel> getHotelList();
 
-    List<Hotel> getHotelsWithFreeRoom(String country, String city, String hotelName,
-                                      LocalDate startDate, LocalDate endDate, Integer numOfTravelers);
-
     Hotel getHotelById(int id);
 
     void saveHotel(Hotel hotel);
 
     List<Hotel> getHotelsByUser(int userId);
 
-    List<Hotel> getHotelsByCriteria(Integer country, Integer city, String hotelName);
-
-    List<Hotel> getHotelsByDate(String country, String city, String hotelName,
-                                   LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats,
-                                   int firstResult, int maxResult);
-
     Long getHotelCount();
+
+    List<Hotel> getHotelsByCountry(int countryId);
+
+    List<Hotel> getHotelsByCity(int city);
+
+    List<Hotel> getHotelsWithFreeRoom(int countryId, int cityId, int hotelId,
+                                      LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats);
+
+    List<Hotel> sortByStars(List<Hotel> hotels);
+
+    List<Hotel> sortByRating(List<Hotel> hotels);
 }
