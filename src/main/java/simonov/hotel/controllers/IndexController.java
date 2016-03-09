@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import simonov.hotel.entity.*;
-import simonov.hotel.services.BookingService;
-import simonov.hotel.services.HotelService;
-import simonov.hotel.services.RoomService;
-import simonov.hotel.services.UserService;
+import simonov.hotel.services.interfaces.*;
+import simonov.hotel.utilites.FileUpLoader;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -22,7 +20,7 @@ import java.util.List;
 
 @Controller
 @EnableWebMvc
-@SessionAttributes({"user", "hotels"})
+@SessionAttributes({"user", "hotels","order"})
 public class IndexController {
 
     @Autowired
@@ -34,31 +32,25 @@ public class IndexController {
     @Autowired
     BookingService bookingService;
     @Autowired
+    CommentService commentService;
+    @Autowired
     ServletContext servletContext;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printHotels(@ModelAttribute User user, Model model) {
         model.addAttribute("hotels", hotelService.getHotelList());
+
         return "main";
     }
 
-    @RequestMapping(value = "/search")
-    public String search(@RequestParam(required = false) String city,
-                         @RequestParam(required = false) String hotel,
-                         @RequestParam(required = false) Integer stars,
-                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                         @RequestParam(required = false) Integer numOfTravelers,
-                         Model model) {
-        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(city, hotel, stars, fromDate, toDate, numOfTravelers));
-        return "main";
-    }
+
 
     @RequestMapping(value = "/hotel/{id}")
-    public String searchHotel(@PathVariable int id, Model model, @ModelAttribute("hotels") ArrayList<Hotel> hotels) {
-        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
-        model.addAttribute("hotel", hotelItem);
-        model.addAttribute("rooms", hotelItem.getRooms()); //TODO PROBLEM! when i come from /profile
+    public String searchHotel(@PathVariable int id, Model model) {
+        Hotel hotel = hotelService.getHotelById(id);
+        model.addAttribute("hotel", hotel);
+        List<Room> rooms = roomService.getRoomsByHotel(id);
+        model.addAttribute("rooms", rooms);
         return "hotelInfo";
     }
 
@@ -79,7 +71,7 @@ public class IndexController {
     @ResponseBody
     boolean checkUser(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                      @RequestParam int roomId, @ModelAttribute User user) {
+                      @RequestParam int roomId, @ModelAttribute User user,  Model model) {
         if (user.getRole() != Role.NotAuthorized) {
             if (fromDate.isBefore(toDate) && roomService.isFree(fromDate, toDate, roomId)) {
                 Booking booking = new Booking();
@@ -87,12 +79,23 @@ public class IndexController {
                 booking.setEndDate(toDate);
                 booking.setRoom(roomService.getRoomById(roomId));
                 booking.setUser(user);
+                booking.setStatus(Status.TempBlocked);
                 bookingService.save(booking);
                 return true;
             } else return false;
         } else {
             return false;
         }
+    }
+
+    @RequestMapping(value = "/comment/{hotelId}")
+    public String saveComment(@PathVariable int hotelId){
+        Comment comment = new Comment();
+        comment.setHotel(hotelService.getHotelById(hotelId));
+        comment.setRating(4d);
+        comment.setComment("Bad");
+        commentService.save(comment);
+        return "userProfile";
     }
 
     @RequestMapping(value = "/addRoom", method = RequestMethod.POST)
@@ -112,15 +115,8 @@ public class IndexController {
         Hotel currentHotel = hotelService.getHotelById(hotelId);
         room.setHotel(currentHotel);
         roomService.saveRoom(room);
-        if (!image.isEmpty()) {
-            try {
-                File imageRoom = new File(servletContext.getRealPath("/resources/images/rooms/")
-                        + File.separator + currentHotel.getName() + room.getId() + ".jpg");
-                image.transferTo(imageRoom);
-            } catch (IOException e) {
-                return "You failed to upload " + image + " => " + e.getMessage();
-            }
-        }
+        String subPath =servletContext.getRealPath("/resources/images/rooms/")+currentHotel.getName()+room.getId()+".jpg";
+        FileUpLoader.uploadImage(image,subPath);
         return "redirect:/hotel/" + currentHotel.getId();
     }
 
@@ -132,20 +128,12 @@ public class IndexController {
                            @RequestParam MultipartFile image) {
         Hotel newHotel = new Hotel();
         newHotel.setName(name);
-        newHotel.setCity(city);
+//        newHotel.setCity(city);
         newHotel.setStars(stars);
         newHotel.setUser(userService.get(owner));
         hotelService.saveHotel(newHotel);
-        if (!image.isEmpty()) {
-            try {
-                File imageHotel = new File(servletContext.getRealPath("/resources/images/hotels/")
-                        + File.separator + newHotel.getId() + ".jpg");
-                image.transferTo(imageHotel);
-            } catch (IOException e) {
-                return "You failed to upload " + image + " => " + e.getMessage();
-            }
-        }
-
+        String subPath =servletContext.getRealPath("/resources/images/hotels/")+newHotel.getId()+".jpg";
+        FileUpLoader.uploadImage(image,subPath);
         return "redirect:/profile";
     }
 
@@ -156,7 +144,7 @@ public class IndexController {
             model.addAttribute("hotels", hotels);
             return "hotelsOwner";
         } else if (user.getRole() == Role.CLIENT) {
-            model.addAttribute("bookings", bookingService.getBookingsByUser(user.getId()));
+            model.addAttribute("bookings", bookingService.getActualBookingsByUser(user.getId()));
             return "userReservation";
         } else return "redirect:/";
     }

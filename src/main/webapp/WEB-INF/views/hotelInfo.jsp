@@ -18,8 +18,8 @@
 <div>
     <div class="main">
         <table>
-            <c:forEach items="${hotel.rooms}" var="room">
-            <%--<c:forEach items="${rooms}" var="room">--%>
+            <%--<c:forEach items="${hotel.rooms}" var="room">--%>
+            <c:forEach items="${rooms}" var="room">
                 <tr class="room-table">
                     <td>
                         <img onerror="this.onerror=null;this.src='../resources/images/rooms/noImage.jpg'"

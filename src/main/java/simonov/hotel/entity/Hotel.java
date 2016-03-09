@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@FilterDef(name="RoomFilter",
-        parameters={
-                @ParamDef( name = "startDate", type ="java.time.LocalDate"),
-                @ParamDef( name = "endDate", type ="java.time.LocalDate"),
-                @ParamDef( name = "seats", type ="integer")
-        } )
+@FilterDef(name = "RoomFilter",
+        parameters = {
+                @ParamDef(name = "startDate", type = "java.time.LocalDate"),
+                @ParamDef(name = "endDate", type = "java.time.LocalDate")
+        })
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +31,9 @@ public class Hotel {
     @Column
     private int stars;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "hotel")
     @Filter(name = "RoomFilter", condition = "id NOT IN (select b.room_id from Booking b " +
-            "where b.startDate<=:endDate and b.endDate>=:startDate) AND seats >= :seats")
+            "where b.startDate<=:endDate and b.endDate>=:startDate)")
     private List<Room> rooms;
 
     @ManyToOne
@@ -83,7 +81,7 @@ public class Hotel {
     }
 
     public List<Room> getRooms() {
-        if (rooms==null){
+        if (rooms == null) {
             rooms = new ArrayList<>();
         }
         return rooms;
@@ -93,7 +91,7 @@ public class Hotel {
         this.rooms = rooms;
     }
 
-    public void addRoom(Room room){
+    public void addRoom(Room room) {
         getRooms().add(room);
     }
 

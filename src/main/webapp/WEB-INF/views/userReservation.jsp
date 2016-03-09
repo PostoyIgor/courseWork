@@ -13,10 +13,31 @@
             <tr>
                 <td>
                     <div>
-                        From ${booking.startDate} to ${booking.endDate}<br/>
-                       Room number ${booking.room.number}
+                        From ${booking.startDate}
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        To ${booking.endDate}<br/>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        Status ${booking.status}
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        Price: ${booking.room.price}$
+                    </div>
+                </td>
+                <td>
+                    <div>
                         Hotel ${booking.room.hotel.name}
                     </div>
+                </td>
+                <td>
+                    <div class="comment" ><a href="/comment/${booking.room.hotel.id}">Comment</a></div>
                 </td>
             </tr>
         </c:forEach>

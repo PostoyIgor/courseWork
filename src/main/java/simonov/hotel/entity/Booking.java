@@ -11,11 +11,11 @@ public class Booking {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id" )
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id" )
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "room_id")
     private Room room;
 
     @Column
@@ -27,6 +27,9 @@ public class Booking {
     @Column
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+
+    @Column
+    private boolean commented;
 
     public int getId() {
         return id;
@@ -74,5 +77,13 @@ public class Booking {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public boolean isCommented() {
+        return commented;
+    }
+
+    public void setCommented(boolean commented) {
+        this.commented = commented;
     }
 }

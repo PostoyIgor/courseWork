@@ -1,6 +1,12 @@
 package simonov.hotel.entity;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -12,6 +18,7 @@ public class User {
     private int id;
 
     @Column(unique = true)
+    @Length(min = 3, max = 25)
     private String login;
 
     @Column
@@ -21,6 +28,8 @@ public class User {
     private String lastName;
 
     @Column(unique = true)
+    @NotEmpty
+    @Email
     private String email;
 
     @Column
@@ -28,6 +37,7 @@ public class User {
     private Role role;
 
     @Column
+    @Length(min = 6, max = 25)
     private String password;
 
     @Column
