@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import simonov.hotel.dao.interfaces.BookingDAO;
 import simonov.hotel.dao.interfaces.RoomDAO;
 import simonov.hotel.entity.Booking;
+import simonov.hotel.entity.Room;
 import simonov.hotel.services.interfaces.BookingService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -82,14 +84,20 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public boolean saveAll(List<Booking> bookings) {
-        boolean flag = true;
-        for (Booking booking : bookings) {
-                Integer id = save(booking);
-                if (id == null || id <= 0) {
-                    flag = false;
-                }
+    public List<Room> saveAll(List<Booking> bookings) {
+        List<Room> result = new ArrayList<>();
+        for (Booking b : bookings){
+            if (!roomDAO.isFree(b.getStartDate(),b.getEndDate(), b.getRoom().getId())){
+                result.add(b.getRoom());
+            }
         }
-        return flag;
+        if (result.isEmpty()){
+            for (Booking booking : bookings) {
+                bookingDAO.save(booking);
+            }
+        }
+        return result;
     }
+
+
 }
