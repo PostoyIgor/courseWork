@@ -4,11 +4,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 import simonov.hotel.dao.interfaces.CityDAO;
 import simonov.hotel.entity.City;
 
 import java.util.List;
 
+@Repository
+@SuppressWarnings("unchecked")
 public class CityHibernateDAO extends AbstractDAO<City,Integer> implements CityDAO {
 
     public CityHibernateDAO() {

@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import simonov.hotel.entity.City;
-import simonov.hotel.entity.Country;
-import simonov.hotel.entity.Hotel;
+import simonov.hotel.entity.*;
 import simonov.hotel.services.interfaces.*;
 
 import javax.servlet.ServletContext;
@@ -37,7 +36,7 @@ public class SearchController {
     @Autowired
     CountryService countryService;
 
-    @RequestMapping(value = "/")
+    @RequestMapping
     public String search(@RequestParam(required = false) String country,
                          @RequestParam(required = false) String city,
                          @RequestParam(required = false) String hotel,
@@ -64,4 +63,10 @@ public class SearchController {
         return hotelService.getHotelsByCriteria(countryId,city,hotel);
     }
 
+    @ModelAttribute("user")
+    public User createUser() {
+        User user = new User();
+        user.setRole(Role.NotAuthorized);
+        return new User();
+    }
 }

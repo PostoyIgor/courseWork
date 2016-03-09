@@ -16,9 +16,20 @@ public class UserHibernateDAO extends AbstractDAO<User,Integer> implements UserD
     }
 
     public User getLoggedUser(String login, String password) {
-        Criteria authCriteria = getCurrentSession().createCriteria(User.class);
-        List users = authCriteria.add(Restrictions.eq("login", login))
-                .add(Restrictions.eq("password", password)).list();
-        return users.size() == 1 ? (User) users.get(0) : null;
+        return (User) getCurrentSession().createCriteria(User.class)
+                .add(Restrictions.eq("login", login))
+                .add(Restrictions.eq("password", password)).uniqueResult();
+    }
+
+    @Override
+    public boolean isLoginFree(String login) {
+        Criteria criteria = getCurrentSession().createCriteria(User.class);
+        return criteria.add(Restrictions.eq("login",login)).uniqueResult()==null;
+    }
+
+    @Override
+    public boolean isEmailFree(String email) {
+        Criteria criteria = getCurrentSession().createCriteria(User.class);
+        return criteria.add(Restrictions.eq("email",email)).uniqueResult()==null;
     }
 }

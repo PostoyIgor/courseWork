@@ -52,7 +52,7 @@ public class HotelServiceImpl implements HotelService {
         return null;
     }
 
-    @Override
+    @Override //TODO rewrite this method!
     public List<Hotel> getHotelsByDate(String country, String city, String hotelName,
                                            LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats,
                                            int firstResult, int maxResult) {

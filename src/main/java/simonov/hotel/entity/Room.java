@@ -28,7 +28,7 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hotel_id" )
     private Hotel hotel;
 

@@ -1,6 +1,25 @@
 package simonov.hotel.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import simonov.hotel.dao.interfaces.CommentDAO;
+import simonov.hotel.entity.Comment;
 import simonov.hotel.services.interfaces.CommentService;
 
+import java.util.List;
+
+@Service
 public class CommentServiceImpl implements CommentService {
+    @Autowired
+    CommentDAO commentDAO;
+
+    @Override
+    public void save(Comment comment) {
+        commentDAO.save(comment);
+    }
+
+    @Override
+    public List<Comment> getCommentsByHotel(int hotelId) {
+        return commentDAO.getCommentsByHotel(hotelId);
+    }
 }

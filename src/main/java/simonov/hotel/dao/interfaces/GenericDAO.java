@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface GenericDAO<T, PK extends Serializable> {
-    void save(T newInstance);
+    PK save(T newInstance);
 
     T get(PK id);
 

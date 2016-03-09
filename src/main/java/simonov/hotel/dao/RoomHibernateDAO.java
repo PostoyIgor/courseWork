@@ -13,29 +13,28 @@ import java.util.List;
 
 @Repository
 @SuppressWarnings("unchecked")
-public class RoomHibernateDAO extends AbstractDAO<Room,Integer> implements RoomDAO {
+public class RoomHibernateDAO extends AbstractDAO<Room, Integer> implements RoomDAO {
 
     public RoomHibernateDAO() {
         super(Room.class);
     }
 
     @Override
-    public boolean isFree(LocalDate start, LocalDate end, int roomId){
-        Query query = getCurrentSession().createQuery("from Booking where room.id = :roomId");
-        query.setInteger("roomId",roomId);
-        List<Booking> bookings = query.list();
-        for(Booking booking: bookings){
-            if(booking.getEndDate().isBefore(start)||booking.getStartDate().isAfter(end))
-                continue;
-            return false;
-        }
-        return true;
+    public boolean isFree(LocalDate start, LocalDate end, int roomId) {
+        Query query1 = getCurrentSession().createQuery("from Room as r where r.id = :roomId and " +
+                " not exists (from Booking as b where b.room.id=:roomId" +
+                " and (startDate<=:endDate and endDate>=:startDate))");
+        query1.setParameter("roomId", roomId);
+        query1.setParameter("startDate", start);
+        query1.setParameter("endDate", end);
+        Room room = (Room) query1.uniqueResult();
+        return room != null;
     }
 
     @Override
     public List<Room> getRoomsByHotel(int hotelId) {
         Criteria criteria = getCurrentSession().createCriteria(Room.class);
-        criteria.add(Restrictions.eq("hotel.id",hotelId));
+        criteria.add(Restrictions.eq("hotel.id", hotelId));
         return criteria.list();
     }
 }

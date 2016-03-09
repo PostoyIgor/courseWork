@@ -6,38 +6,12 @@
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="<c:url value="/resources/js/divPopUp.js" />"></script>
+    <script src="<c:url value="/resources/js/main.js" />"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Hotel Booking Service</title>
 </head>
 <body>
-<c:choose>
-    <c:when test="${user.login==null}">
-        <a class="menuLink" href="/registration">Sign In</a><a href="#" class="menuLink" id="showpopup">Log In</a>
-        <div id="popup">
-            <div>
-                <form:form method="POST" commandName="user" action="check-user" id="loginForm">
-                    <h4>Enter to the site<br/></h4>
-                    <form:label path="login">Login:</form:label><br/>
-                    <form:input path="login"/>
-                    <form:errors path="login" cssClass="error"/><br/>
-                    <form:label path="password">Password:</form:label><br/>
-                    <form:password path="password"/>
-                    <form:errors path="password" cssClass="error"/><br/>
-
-                    <input type="submit" id="btnLogin" value="Login">
-                    <span id="ajax-error"></span>
-                </form:form>
-            </div>
-            <div class="close">[X]</div>
-        </div>
-        <div id="back"></div>
-    </c:when>
-    <c:otherwise>
-        <a class="menuLink" href="/profile">${user.login} Profile</a>
-        <a class="menuLink" href="/logout">Logout</a>
-    </c:otherwise>
-</c:choose>
+<%@ include file="forms/loginForm.jsp"%>
 <div class="right-panel">
     <div class="filter">
         <span><h5>Filtering Room</h5></span>

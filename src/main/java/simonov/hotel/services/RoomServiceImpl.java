@@ -20,10 +20,6 @@ public class RoomServiceImpl implements RoomService {
         roomDAO.save(room);
     }
     @Override
-    public List<Room> getRooms(){
-        return roomDAO.getAll();
-    }
-    @Override
     public boolean isFree(LocalDate start, LocalDate end, int roomId){
         return roomDAO.isFree(start, end, roomId);
     }

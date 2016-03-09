@@ -15,20 +15,39 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserDAO userDAO;
+
     @Override
-    public void save(User user){
-        userDAO.save(user);
+    public boolean save(User user) {
+        if (isLoginFree(user.getLogin()) && isEmailFree(user.getEmail())) {
+            userDAO.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
+
     @Override
-    public User get(Integer id){
-       return userDAO.get(id);
+    public User get(Integer id) {
+        return userDAO.get(id);
     }
+
     @Override
-    public List<User> getAll(){
-        return userDAO.getAll();
+    public void update(User user) {
+        userDAO.update(user);
     }
+
     @Override
-    public User getLoggedUser(String login, String password){
-       return userDAO.getLoggedUser(login,password);
+    public User getLoggedUser(String login, String password) {
+        return userDAO.getLoggedUser(login, password);
+    }
+
+    @Override
+    public boolean isLoginFree(String login) {
+        return (login != null && !login.isEmpty()) && userDAO.isLoginFree(login);
+    }
+
+    @Override
+    public boolean isEmailFree(String email) {
+        return (email != null && !email.isEmpty()) && userDAO.isEmailFree(email);
     }
 }

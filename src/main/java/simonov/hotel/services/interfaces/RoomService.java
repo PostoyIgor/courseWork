@@ -10,7 +10,6 @@ import java.util.List;
 public interface RoomService {
 
     void saveRoom(Room room);
-    List<Room> getRooms();
     boolean isFree(LocalDate start, LocalDate end, int roomId);
     Room getRoomById(int id);
     List<Room> getRoomsByHotel(int hotelId);

@@ -35,16 +35,15 @@ public class HotelHibernateDAO extends AbstractDAO<Hotel, Integer> implements Ho
         Session session = getCurrentSession();
         session.enableFilter("RoomFilter")
                 .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
-                .setParameter("seats", numOfTravelers);
+                .setParameter("endDate", endDate);
         Criteria hotelCriteria = session.createCriteria(Hotel.class);
 
-        if (city.length() != 0) {
+        if (city!=null && city.length() != 0) {
             hotelCriteria.createAlias("city", "city");
             hotelCriteria.add(Restrictions.eq("city.name", city));
         }
 
-        if (country.length() != 0) {
+        if (country!=null && country.length() != 0) {
             hotelCriteria.createAlias("city", "city");
             hotelCriteria.createAlias("city.country", "country");
             hotelCriteria.add(Restrictions.eq("country.name", country));
