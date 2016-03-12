@@ -25,7 +25,7 @@ public abstract class AbstractDAO<T, PK extends Serializable> implements Generic
 
     @Override
     public PK save(T newInstance) {
-       return (PK) getCurrentSession().save(newInstance);
+        return (PK) getCurrentSession().save(newInstance);
     }
 
     @Override

@@ -25,11 +25,22 @@ public class Room {
     @Column
     private int seats;
 
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    @Column
+    private boolean locked;
+
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "hotel_id" )
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
     public Double getPrice() {
@@ -39,6 +50,7 @@ public class Room {
     public void setPrice(Double price) {
         this.price = price;
     }
+
     public int getId() {
         return id;
     }

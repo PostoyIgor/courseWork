@@ -1,19 +1,10 @@
 package simonov.hotel.entity;
 
-import org.hibernate.annotations.*;
-
 import javax.persistence.*;
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@FilterDef(name = "RoomFilter",
-        parameters = {
-                @ParamDef(name = "startDate", type = "java.time.LocalDate"),
-                @ParamDef(name = "endDate", type = "java.time.LocalDate"),
-
-        })
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,16 +23,13 @@ public class Hotel {
     @Column
     private int stars;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @Filter(name = "RoomFilter", condition = "id NOT IN (select b.room_id from Booking b " +
-            "where b.startDate<=:endDate and b.endDate>=:startDate)")
+    @OneToMany(mappedBy = "hotel")
     private List<Room> rooms;
 
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hotel")
     private List<Comment> comments;
 
     @Column

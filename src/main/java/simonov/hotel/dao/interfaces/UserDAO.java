@@ -5,6 +5,8 @@ import simonov.hotel.entity.User;
 public interface UserDAO extends GenericDAO<User, Integer> {
 
     User getLoggedUser(String login, String password);
+
     boolean isLoginFree(String login);
+
     boolean isEmailFree(String email);
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 @Service
 public interface CityService {
-        List<City> getCitiesByCriteria(String city, Integer countryId);
-        City getCityByName(String cityName);
+    List<City> getCitiesByCriteria(String city, Integer countryId);
+
+    City getCityByName(String cityName);
 }

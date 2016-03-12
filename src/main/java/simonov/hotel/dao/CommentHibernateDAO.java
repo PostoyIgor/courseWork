@@ -1,9 +1,6 @@
 package simonov.hotel.dao;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import simonov.hotel.dao.interfaces.CommentDAO;
 import simonov.hotel.entity.Comment;

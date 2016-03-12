@@ -5,6 +5,11 @@ h3 {
     display: inline;
 }
 
+.error {
+    color: red;
+    font-size: 12px;
+    font-weight: bold;
+}
 .boxBody {
     width: 200px;
 }

@@ -7,8 +7,6 @@ import simonov.hotel.dao.interfaces.UserDAO;
 import simonov.hotel.entity.User;
 import simonov.hotel.services.interfaces.UserService;
 
-import java.util.List;
-
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {

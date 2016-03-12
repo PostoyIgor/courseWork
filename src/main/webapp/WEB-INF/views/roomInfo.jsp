@@ -18,7 +18,6 @@
                                                        src="/resources/images/hotels/stars.png"/></c:forEach>
     </p>
 </div>
-</p>
 <p>Room № ${room.number}</p>
 <p>Description:</p>
 <span>${room.description}<br/></span>
