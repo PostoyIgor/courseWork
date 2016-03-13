@@ -2,7 +2,6 @@ package simonov.hotel.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import simonov.hotel.dao.interfaces.BookingDAO;
 import simonov.hotel.dao.interfaces.RoomDAO;
@@ -16,7 +15,6 @@ import java.util.List;
 @Service
 @Transactional
 public class BookingServiceImpl implements BookingService {
-
 
     @Autowired
     BookingDAO bookingDAO;
@@ -58,17 +56,22 @@ public class BookingServiceImpl implements BookingService {
         return bookingDAO.getHistoryBookingsByHotel(hotelId);
     }
 
+    // I think - it is not need
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Integer save(Booking booking) {
-        if (roomDAO.isFree(booking.getStartDate(), booking.getEndDate(), booking.getRoom().getId())){
-            return bookingDAO.save(booking);
+        roomDAO.setLock(booking.getRoom().getId());
+        if (roomDAO.isFree(booking.getStartDate(), booking.getEndDate(), booking.getRoom().getId())) {
+            int id = bookingDAO.save(booking);
+            roomDAO.unlock(booking.getRoom().getId());
+            return id;
         }
+        roomDAO.unlock(booking.getRoom().getId());
         return 0;
     }
 
     @Override
-    public void delete(Booking booking) {
+    public void delete(Booking booking, String message) {
+//        emailSender.sendEmail(booking.getUser().getEmail(),message);
         bookingDAO.delete(booking);
     }
 
@@ -83,21 +86,23 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public List<Room> saveAll(List<Booking> bookings) {
+        bookings.sort((o1, o2) -> o1.getRoom().getId() - o2.getRoom().getId());  // for prevent deadlock
         List<Room> result = new ArrayList<>();
-        for (Booking b : bookings){
-            if (!roomDAO.isFree(b.getStartDate(),b.getEndDate(), b.getRoom().getId())){
+        for (Booking b : bookings) {
+            roomDAO.setLock(b.getRoom().getId());
+            if (!roomDAO.isFree(b.getStartDate(), b.getEndDate(), b.getRoom().getId())) {
                 result.add(b.getRoom());
             }
         }
-        if (result.isEmpty()){
+        if (result.isEmpty()) {
             for (Booking booking : bookings) {
                 bookingDAO.save(booking);
+                roomDAO.unlock(booking.getRoom().getId());
             }
+        } else {
+            bookings.stream().forEach(booking -> roomDAO.unlock(booking.getRoom().getId()));
         }
         return result;
     }
-
-
 }

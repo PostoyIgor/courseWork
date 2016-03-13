@@ -8,5 +8,6 @@ import java.util.List;
 @Service
 public interface CommentService {
     void save(Comment comment);
+
     List<Comment> getCommentsByHotel(int hotelId);
 }

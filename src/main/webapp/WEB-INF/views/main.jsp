@@ -53,14 +53,12 @@
                 </td>
                 <td>
                     <div>
-                        <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city}
-                        <p>Available rooms: ${hotel.rooms.size()}</p>
+                        <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city.name}
                     </div>
                 </td>
             </tr>
         </c:forEach>
     </table>
 </div>
-
 </body>
 </html>

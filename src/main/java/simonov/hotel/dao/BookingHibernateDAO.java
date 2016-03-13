@@ -41,7 +41,7 @@ public class BookingHibernateDAO extends AbstractDAO<Booking, Integer> implement
     @Override
     public List<Booking> getActualBookingsByUser(int userId) {
         Query query = getCurrentSession().createQuery("from Booking where user.id=:userId and startDate>=:today");
-        query.setParameter("userId",userId);
+        query.setParameter("userId", userId);
         query.setParameter("today", LocalDate.now());
         return query.list();
     }
@@ -58,7 +58,7 @@ public class BookingHibernateDAO extends AbstractDAO<Booking, Integer> implement
     @Override
     public List<Booking> getHistoryBookingsByUser(int userId) {
         Query query = getCurrentSession().createQuery("from Booking where user.id=:userId and startDate<:today");
-        query.setParameter("userId",userId);
+        query.setParameter("userId", userId);
         query.setParameter("today", LocalDate.now());
         return query.list();
     }

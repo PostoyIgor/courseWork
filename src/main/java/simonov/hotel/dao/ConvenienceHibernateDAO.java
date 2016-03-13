@@ -7,9 +7,10 @@ import simonov.hotel.dao.interfaces.ConvenienceDAO;
 import simonov.hotel.entity.Convenience;
 
 import java.util.List;
+
 @SuppressWarnings("unchecked")
 @Repository
-public class ConvenienceHibernateDAO extends AbstractDAO<Convenience,Integer> implements ConvenienceDAO {
+public class ConvenienceHibernateDAO extends AbstractDAO<Convenience, Integer> implements ConvenienceDAO {
 
     public ConvenienceHibernateDAO() {
         super(Convenience.class);
@@ -18,7 +19,7 @@ public class ConvenienceHibernateDAO extends AbstractDAO<Convenience,Integer> im
     @Override
     public List<Convenience> getConveniencesByHotel(Integer hotelId) {
         Criteria criteria = getCurrentSession().createCriteria(Convenience.class);
-        criteria.add(Restrictions.eq("hotel.id",hotelId));
+        criteria.add(Restrictions.eq("hotel.id", hotelId));
         return criteria.list();
     }
 }

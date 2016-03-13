@@ -27,7 +27,7 @@ public class CountryHibernateDAO extends AbstractDAO<Country, Integer> implement
     @Override
     public List<Country> getCountriesByNameCriteria(String nameCriteria) {
         Criteria criteria = getCurrentSession().createCriteria(Country.class);
-        criteria.add(Restrictions.ilike("name",nameCriteria,MatchMode.START));
+        criteria.add(Restrictions.ilike("name", nameCriteria, MatchMode.START));
         return criteria.list();
     }
 }

@@ -1,6 +1,6 @@
 <div class="user-bar">
     <c:choose>
-        <c:when test="${user.id==0}">
+        <c:when test="${user.role == 'NotAuthorized' || user.role == null}">
             <a class="menuLink" href="/registration">Sign In</a>
             <a class="menuLink" id="showpopup" href="#">Log In</a>
         </c:when>
