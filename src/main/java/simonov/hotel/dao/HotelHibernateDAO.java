@@ -8,6 +8,7 @@ import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Repository;
 import simonov.hotel.dao.interfaces.HotelDAO;
 import simonov.hotel.entity.Hotel;
+import simonov.hotel.entity.Request;
 import simonov.hotel.entity.Room;
 
 import java.sql.Connection;
@@ -35,28 +36,39 @@ public class HotelHibernateDAO extends AbstractDAO<Hotel, Integer> implements Ho
     }
 
     @Override
-    public List<Hotel> getHotelsWithFreeRoom(int countryId, int cityId, int hotelId,
-                                             LocalDate startDate, LocalDate endDate, Map<Integer, Integer> seats) {
+    public List<Hotel> getHotelsWithFreeRoom(Request request) {
         int index = 1;
-        Query query = getCurrentSession().createQuery(query(countryId, cityId, hotelId, seats));
-        query.setParameter("startDate", startDate);
-        query.setParameter("endDate", endDate);
-        if (countryId != 0) {
-            query.setParameter("country", countryId);
-        } else if (cityId != 0) {
-            query.setParameter("city", cityId);
-        } else if (hotelId != 0) {
-            query.setParameter("hotelName", hotelId);
+        Query query = getCurrentSession().createQuery(request.getQuery());
+        query.setParameter("startDate", request.getStartDate());
+        query.setParameter("endDate", request.getEndDate());
+        if (request.getHotelId() != 0) {
+            query.setInteger("hotelId", request.getHotelId());
+        } else if (request.getCityId() != 0) {
+            query.setInteger("cityId", request.getCityId());
+        } else if (request.getCountryId() != 0) {
+            query.setInteger("countryId", request.getCountryId());
+        }
+        if (request.getStars() != 0){
+            query.setInteger("stars", request.getStars());
+        }
+        if (request.getFirstResult() != 0){
+            query.setFirstResult(request.getFirstResult());
+        }
+        if (request.getLimit() != 0){
+            query.setMaxResults(request.getLimit());
         }
 
-        for (Map.Entry entry : seats.entrySet()) {
-            query.setParameter("seats" + index, entry.getKey());
-            query.setParameter("value" + index, ((Integer) entry.getValue()).longValue());
-            index++;
+        if (request.getSeats()!=null){
+            for (Map.Entry entry : request.getSeats().entrySet()) {
+                query.setParameter("seats" + index, entry.getKey());
+                query.setParameter("value" + index, ((Integer) entry.getValue()).longValue());
+                index++;
+            }
+
         }
+
 
         List<Hotel> h = query.list();
-
         return h;
     }
     @Override
@@ -72,36 +84,5 @@ public class HotelHibernateDAO extends AbstractDAO<Hotel, Integer> implements Ho
         query.setParameter("country", country);
         return query.list();
     }
-
-    private String query(int country, int city, int hotelName, Map<Integer, Integer> seats) {
-
-        StringBuilder query = new StringBuilder("select distinct h from Hotel as h left join fetch h.rooms as room where");
-        StringBuilder subquery = new StringBuilder(" (");
-        int index = 1;
-        int mapSize = seats.size();
-
-        if (city != 0) {
-            query.append(" h.city.id = :city and");
-        } else if (hotelName != 0) {
-            query.append(" h.name = :hotelName and");
-        } else if (country != 0) {
-            query.append(" h.city in (select c.id from City as c where c.country.id = :country) and ");
-        }
-        for (Map.Entry entry : seats.entrySet()) {
-            query.append(" (select count(r.id) from Room as r where h.id = r.hotel.id and r.seats = :seats" + index + " and not exists " +
-                    "(select distinct b.room.id from Booking as b where r.id = b.room.id and (endDate>=:startDate and startDate<=:endDate)))>=:value" + index + " and ");
-            if (index == mapSize) {
-                subquery.append("room.seats = :seats" + index + ") ");
-            } else {
-                subquery.append("room.seats = :seats" + index + " or ");
-            }
-            index++;
-        }
-        query.append(" not exists (select distinct b.room.id from Booking as b where room.id = b.room.id and (endDate>=:startDate and startDate<=:endDate)) and ");
-        query.append(subquery);
-        return query.toString();
-    }
-
-
 }
 
