@@ -12,15 +12,15 @@ import simonov.hotel.services.interfaces.*;
 import simonov.hotel.utilites.FileUpLoader;
 
 import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @EnableWebMvc
-@SessionAttributes({"user", "hotels","order"})
+@SessionAttributes({"user", "hotels"})
 public class IndexController {
 
     @Autowired
@@ -35,27 +35,47 @@ public class IndexController {
     CommentService commentService;
     @Autowired
     ServletContext servletContext;
+    @Autowired
+    CityService cityService;
+    @Autowired
+    ConvenienceService convenienceService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String printHotels(@ModelAttribute User user, Model model) {
-        model.addAttribute("hotels", hotelService.getHotelList());
-
+    public String printHotels(@ModelAttribute User user, @ModelAttribute ArrayList<Hotel> hotels, Model model) {
+//        model.addAttribute("hotels", hotelService.getFirstTenHotels());
+        Request request = new Request();
+        request.setCountryId(1);
+//        request.setCityId(1);
+//        request.setHotelId(1);
+        request.setStartDate(LocalDate.parse("2016-03-05"));
+        request.setEndDate(LocalDate.parse("2016-05-19"));
+        Map<Integer, Integer> seats = new HashMap<>();
+        seats.put(2, 4);
+//        seats.put(1,1);
+        request.setSeats(seats);
+        request.setFirstResult(0);
+        request.setLimit(10);
+        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(request));
+        hotelService.getHotelsWithFreeRoom(request).stream().forEach(hotel -> System.out.println(hotel.getRooms().size()));
         return "main";
     }
 
 
-
     @RequestMapping(value = "/hotel/{id}")
-    public String searchHotel(@PathVariable int id, Model model) {
-        Hotel hotel = hotelService.getHotelById(id);
-        model.addAttribute("hotel", hotel);
-        List<Room> rooms = roomService.getRoomsByHotel(id);
-        model.addAttribute("rooms", rooms);
+    public String searchHotel(@PathVariable int id, Model model, @ModelAttribute User user,
+                              @ModelAttribute("hotels") ArrayList<Hotel> hotels) {
+//        Hotel hotel = hotelService.getHotelById(id);
+//        model.addAttribute("hotel", hotel);
+//        List<Room> rooms = roomService.getRoomsByHotel(id);
+//        model.addAttribute("rooms", rooms);
+        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
+        model.addAttribute("hotel", hotelItem);
+
         return "hotelInfo";
     }
 
     @RequestMapping(value = "/hotel/{hotelId}/roomDetails/{roomId}")
-    public String roomInfo(@PathVariable int hotelId, @PathVariable int roomId, Model model) {
+    public String roomInfo(@PathVariable int hotelId, @PathVariable int roomId, Model model, @ModelAttribute User user) {
         Room room = roomService.getRoomById(roomId);
         if (hotelId != room.getHotel().getId()) {
             return "error";
@@ -69,9 +89,9 @@ public class IndexController {
     @RequestMapping(value = "/check-date", method = RequestMethod.GET)
     public
     @ResponseBody
-    boolean checkUser(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
+    boolean checkDate(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                      @RequestParam int roomId, @ModelAttribute User user,  Model model) {
+                      @RequestParam int roomId, @ModelAttribute User user, Model model) {
         if (user.getRole() != Role.NotAuthorized) {
             if (fromDate.isBefore(toDate) && roomService.isFree(fromDate, toDate, roomId)) {
                 Booking booking = new Booking();
@@ -79,7 +99,7 @@ public class IndexController {
                 booking.setEndDate(toDate);
                 booking.setRoom(roomService.getRoomById(roomId));
                 booking.setUser(user);
-                booking.setStatus(Status.TempBlocked);
+                booking.setStatus(Status.NotConfirmed);
                 bookingService.save(booking);
                 return true;
             } else return false;
@@ -89,11 +109,12 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/comment/{hotelId}")
-    public String saveComment(@PathVariable int hotelId){
+    public String saveComment(@PathVariable int hotelId, @ModelAttribute User user) {
         Comment comment = new Comment();
         comment.setHotel(hotelService.getHotelById(hotelId));
         comment.setRating(4d);
         comment.setComment("Bad");
+        comment.setUser(user);
         commentService.save(comment);
         return "userProfile";
     }
@@ -102,7 +123,7 @@ public class IndexController {
     public String addRoom(@RequestParam String type,
                           @RequestParam int number,
                           @RequestParam String description,
-                          @RequestParam int price,
+                          @RequestParam Double price,
                           @RequestParam int seats,
                           @RequestParam int hotelId,
                           @RequestParam MultipartFile image) {
@@ -115,8 +136,8 @@ public class IndexController {
         Hotel currentHotel = hotelService.getHotelById(hotelId);
         room.setHotel(currentHotel);
         roomService.saveRoom(room);
-        String subPath =servletContext.getRealPath("/resources/images/rooms/")+currentHotel.getName()+room.getId()+".jpg";
-        FileUpLoader.uploadImage(image,subPath);
+        String subPath = servletContext.getRealPath("/resources/images/rooms/") + currentHotel.getName() + room.getId() + ".jpg";
+        FileUpLoader.uploadImage(image, subPath);
         return "redirect:/hotel/" + currentHotel.getId();
     }
 
@@ -128,12 +149,12 @@ public class IndexController {
                            @RequestParam MultipartFile image) {
         Hotel newHotel = new Hotel();
         newHotel.setName(name);
-//        newHotel.setCity(city);
+        newHotel.setCity(cityService.getCityByName(city));
         newHotel.setStars(stars);
         newHotel.setUser(userService.get(owner));
         hotelService.saveHotel(newHotel);
-        String subPath =servletContext.getRealPath("/resources/images/hotels/")+newHotel.getId()+".jpg";
-        FileUpLoader.uploadImage(image,subPath);
+        String subPath = servletContext.getRealPath("/resources/images/hotels/") + newHotel.getId() + ".jpg";
+        FileUpLoader.uploadImage(image, subPath);
         return "redirect:/profile";
     }
 
@@ -149,18 +170,16 @@ public class IndexController {
         } else return "redirect:/";
     }
 
-
     @ModelAttribute("user")
     public User createUser() {
         User user = new User();
         user.setRole(Role.NotAuthorized);
-        return new User();
+        return user;
     }
 
     @ModelAttribute("hotels")
     public ArrayList<Hotel> getHotels() {
-        ArrayList<Hotel> hotelList = new ArrayList<>();
-        return hotelList;
+        return new ArrayList<>();
     }
 
     @ModelAttribute

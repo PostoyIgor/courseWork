@@ -14,11 +14,13 @@ import simonov.hotel.services.interfaces.*;
 
 import javax.servlet.ServletContext;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @EnableWebMvc
-@RequestMapping( "/search")
+@RequestMapping("/search")
 public class SearchController {
 
     @Autowired
@@ -37,36 +39,51 @@ public class SearchController {
     CountryService countryService;
 
     @RequestMapping
-    public String search(@RequestParam(required = false) String country,
-                         @RequestParam(required = false) String city,
-                         @RequestParam(required = false) String hotel,
+    public String search(@RequestParam(required = false) Integer country,
+                         @RequestParam(required = false) Integer city,
+                         @RequestParam(required = false) Integer hotel,
                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
                          @RequestParam(required = false) Integer numOfTravelers,
                          Model model) {
-        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(country, city, hotel, fromDate, toDate, numOfTravelers));
+        Request request = new Request();
+//        request.setCountryId(country);
+//        request.setCityId(city);
+//        request.setHotelId(hotel);
+        request.setStartDate(fromDate);
+        request.setEndDate(toDate);
+        Map<Integer, Integer> seats = new HashMap<>();
+        seats.put(2, 2);
+        request.setSeats(seats);
+        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(request, 0, 10));
         return "main";
     }
 
     @RequestMapping(value = "/", params = "country")
-    public @ResponseBody List<Country> getCountries(@RequestParam String country){
+    public
+    @ResponseBody
+    List<Country> getCountries(@RequestParam String country) {
         return countryService.getCountriesByNameCriteria(country);
     }
 
-    @RequestMapping(value = "/", params = {"city","countryId"})
-    public @ResponseBody List<City> getCities(@RequestParam String city, @RequestParam Integer countryId){
-        return cityService.getCitiesByCriteria(city,countryId);
+    @RequestMapping(value = "/", params = {"city", "countryId"})
+    public
+    @ResponseBody
+    List<City> getCities(@RequestParam String city, @RequestParam Integer countryId) {
+        return cityService.getCitiesByCriteria(city, countryId);
     }
 
-    @RequestMapping(value = "/", params = {"hotel","cityId","countryId"})
-    public @ResponseBody List<Hotel> getHotels(@RequestParam String hotel, @RequestParam Integer city, @RequestParam Integer countryId){
-        return hotelService.getHotelsByCriteria(countryId,city,hotel);
+    @RequestMapping(value = "/", params = {"hotel", "cityId", "countryId"})
+    public
+    @ResponseBody
+    List<Hotel> getHotels(@RequestParam String hotel, @RequestParam Integer city, @RequestParam Integer countryId) {
+        return /*hotelService.getHotelsByCriteria(countryId,city,hotel)*/ null;
     }
 
     @ModelAttribute("user")
     public User createUser() {
         User user = new User();
         user.setRole(Role.NotAuthorized);
-        return new User();
+        return user;
     }
 }
