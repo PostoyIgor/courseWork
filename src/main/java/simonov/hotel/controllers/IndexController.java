@@ -9,14 +9,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import simonov.hotel.entity.*;
 import simonov.hotel.services.interfaces.*;
+import simonov.hotel.utilites.EmailSender;
 import simonov.hotel.utilites.FileUpLoader;
 
 import javax.servlet.ServletContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @EnableWebMvc
@@ -39,24 +38,26 @@ public class IndexController {
     CityService cityService;
     @Autowired
     ConvenienceService convenienceService;
+    @Autowired
+    EmailSender emailSender;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printHotels(@ModelAttribute User user, @ModelAttribute ArrayList<Hotel> hotels, Model model) {
-//        model.addAttribute("hotels", hotelService.getFirstTenHotels());
-        Request request = new Request();
-        request.setCountryId(1);
+        model.addAttribute("hotels", hotelService.getFirstTenHotels());
+//        Request request = new Request();
+//        request.setCountryId(1);
 //        request.setCityId(1);
 //        request.setHotelId(1);
-        request.setStartDate(LocalDate.parse("2016-03-05"));
-        request.setEndDate(LocalDate.parse("2016-05-19"));
-        Map<Integer, Integer> seats = new HashMap<>();
-        seats.put(2, 4);
+//        request.setStartDate(LocalDate.parse("2016-03-05"));
+//        request.setEndDate(LocalDate.parse("2016-05-19"));
+//        Map<Integer, Integer> seats = new HashMap<>();
+//        seats.put(2, 4);
 //        seats.put(1,1);
-        request.setSeats(seats);
-        request.setFirstResult(0);
-        request.setLimit(10);
-        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(request));
-        hotelService.getHotelsWithFreeRoom(request).stream().forEach(hotel -> System.out.println(hotel.getRooms().size()));
+//        request.setSeats(seats);
+//        request.setFirstResult(0);
+//        request.setLimit(10);
+//        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(request));
+//        hotelService.getHotelsWithFreeRoom(request).stream().forEach(hotel -> System.out.println(hotel.getRooms().size()));
         return "main";
     }
 
@@ -64,13 +65,12 @@ public class IndexController {
     @RequestMapping(value = "/hotel/{id}")
     public String searchHotel(@PathVariable int id, Model model, @ModelAttribute User user,
                               @ModelAttribute("hotels") ArrayList<Hotel> hotels) {
-//        Hotel hotel = hotelService.getHotelById(id);
-//        model.addAttribute("hotel", hotel);
-//        List<Room> rooms = roomService.getRoomsByHotel(id);
-//        model.addAttribute("rooms", rooms);
-        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
-        model.addAttribute("hotel", hotelItem);
-
+        Hotel hotel = hotelService.getHotelById(id);
+        model.addAttribute("hotel", hotel);
+        List<Room> rooms = roomService.getRoomsByHotel(id);
+        model.addAttribute("rooms", rooms);
+//        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
+//        model.addAttribute("hotel", hotelItem);
         return "hotelInfo";
     }
 
@@ -153,8 +153,10 @@ public class IndexController {
         newHotel.setStars(stars);
         newHotel.setUser(userService.get(owner));
         hotelService.saveHotel(newHotel);
-        String subPath = servletContext.getRealPath("/resources/images/hotels/") + newHotel.getId() + ".jpg";
-        FileUpLoader.uploadImage(image, subPath);
+        if (image.getContentType().equals("image/jpeg")) {
+            String subPath = servletContext.getRealPath("/resources/images/hotels/") + newHotel.getId() + ".jpg";
+            FileUpLoader.uploadImage(image, subPath);
+        }
         return "redirect:/profile";
     }
 
