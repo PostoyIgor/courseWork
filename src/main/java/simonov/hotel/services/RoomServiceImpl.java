@@ -8,7 +8,6 @@ import simonov.hotel.entity.Room;
 import simonov.hotel.services.interfaces.RoomService;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,7 +17,7 @@ public class RoomServiceImpl implements RoomService {
     RoomHibernateDAO roomDAO;
 
     @Override
-    public void saveRoom(Room room){
+    public void saveRoom(Room room) {
         roomDAO.save(room);
     }
 
@@ -28,7 +27,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean isFree(LocalDate start, LocalDate end, int roomId){
+    public boolean isFree(LocalDate start, LocalDate end, int roomId) {
         return roomDAO.isFree(start, end, roomId);
     }
 
@@ -53,5 +52,8 @@ public class RoomServiceImpl implements RoomService {
         return rooms;
     }
 
-
+    @Override
+    public void update(Room room) {
+        roomDAO.update(room);
+    }
 }

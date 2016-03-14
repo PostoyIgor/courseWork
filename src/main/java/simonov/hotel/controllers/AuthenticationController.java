@@ -34,7 +34,7 @@ public class AuthenticationController {
             model.addAttribute("user", user);
             return "redirect:/";
         } else {
-            model.addAttribute("message","Error registration!");
+            model.addAttribute("message", "Error registration!");
             return "error";
         }
     }
@@ -90,6 +90,6 @@ public class AuthenticationController {
     public User createUser() {
         User user = new User();
         user.setRole(Role.NotAuthorized);
-        return new User();
+        return user;
     }
 }

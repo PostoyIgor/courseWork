@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="simonov.hotel.entity.Role" %>
 <html>
 <head>
     <link href="<c:url value="/resources/css/styles.css" />" rel="stylesheet">
@@ -23,7 +22,7 @@
                 </td>
                 <td>
                     <div>
-                        <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city}
+                        <a href="/hotel/${hotel.id}">${hotel.name}</a> in ${hotel.city.name}
                     </div>
                 </td>
             </tr>

@@ -3,7 +3,6 @@ package simonov.hotel.entity;
 import java.time.LocalDate;
 import java.util.Map;
 
-
 public class Request {
 
     private int countryId;
@@ -16,42 +15,37 @@ public class Request {
     private int firstResult;
     private int limit;
 
-    public String getQuery(){
+    public String getQuery() {
         StringBuilder query = new StringBuilder("select distinct h from Hotel as h inner join fetch h.rooms as room where");
-        StringBuilder subquery = new StringBuilder(" (");
-        int index = 1;
+        StringBuilder subQuery = new StringBuilder(" (");
+        int mapSize = seats.size();
 
-        if (hotelId != 0) {
-            query.append(" h.name = :hotelId and");
-        } else if (cityId != 0) {
+        if (cityId != 0) {
             query.append(" h.city.id = :cityId and");
+        } else if (hotelId != 0) {
+            query.append(" h.id = :hotelId and");
         } else if (countryId != 0) {
             query.append(" h.city in (select c.id from City as c where c.country.id = :countryId) and ");
-        }if (seats != null){
-            int mapSize = seats.size();
-            for (Map.Entry entry : seats.entrySet()) {
-                query.append(" (select count(r.id) from Room as r where h.id = r.hotel.id and r.seats = :seats" + index + " and not exists " +
-                        "(select distinct b.room.id from Booking as b where r.id = b.room.id and (endDate>=:startDate and startDate<=:endDate)))>=:value" + index + " and ");
-                if (index == mapSize) {
-                    subquery.append("room.seats = :seats" + index + ") and");
-                } else {
-                    subquery.append("room.seats = :seats" + index + " or ");
-                }
-                index++;
-            }
-            query.append(subquery);
         }
-
-        if (stars != 0){
+        for (int index = 1; index <= mapSize; index++) {
+            query.append(" (select count(r.id) from Room as r where h.id = r.hotel.id " +
+                    "and r.seats = :seats").append(index)
+                    .append(" and not exists (select distinct b.room.id from Booking as b where r.id = b.room.id" +
+                            " and (endDate>=:startDate and startDate<=:endDate)))>=:value").append(index).append(" and ");
+            if (index == mapSize) {
+                subQuery.append("room.seats = :seats").append(index).append(") and");
+            } else {
+                subQuery.append("room.seats = :seats").append(index).append(" or ");
+            }
+        }
+        query.append(subQuery);
+        if (stars != 0) {
             query.append(" h.stars = :stars and");
         }
-        query.append(" not exists (select distinct b.room.id from Booking as b where room.id = b.room.id and (endDate>=:startDate and startDate<=:endDate)) order by h.id ");
-
+        query.append(" not exists (select distinct b.room.id from Booking as b where room.id = b.room.id" +
+                " and (endDate>=:startDate and startDate<=:endDate)) order by h.id");
         return query.toString();
-
     }
-
-
 
     public int getCountryId() {
         return countryId;
