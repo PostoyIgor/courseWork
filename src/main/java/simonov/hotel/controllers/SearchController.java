@@ -55,7 +55,7 @@ public class SearchController {
         Map<Integer, Integer> seats = new HashMap<>();
         seats.put(2, 2);
         request.setSeats(seats);
-        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(request, 0, 10));
+        model.addAttribute("hotels", hotelService.getHotelsWithFreeRoom(request));
         return "main";
     }
 

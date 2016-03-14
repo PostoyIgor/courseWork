@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -21,11 +20,6 @@ public class HibernateConfig {
 
     @Autowired
     private Environment env;
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
@@ -63,7 +57,6 @@ public class HibernateConfig {
                 setProperty("hibernate.c3p0.max_size", env.getProperty("hibernate.c3p0.max_size"));
                 setProperty("hibernate.c3p0.timeout", env.getProperty("hibernate.c3p0.timeout"));
                 setProperty("hibernate.c3p0.max_statements", env.getProperty("hibernate.c3p0.max_statements"));
-
                 setProperty("hibernate.current_session_context_class", "org.springframework.orm.hibernate5.SpringSessionContext");
             }
         };

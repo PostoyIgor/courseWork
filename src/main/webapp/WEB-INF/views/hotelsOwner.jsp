@@ -43,7 +43,7 @@
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>
-                <input type="file" name="image">
+                <input type="file" name="image" accept="image/jpeg">
                 <input name="owner" type="number" value="${user.id}" hidden> <%--!!!!!!!!!--%>
                 <input id="hotelSubmit" type="submit" value="Add Hotel">
             </form>

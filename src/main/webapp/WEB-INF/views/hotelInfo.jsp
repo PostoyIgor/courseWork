@@ -17,8 +17,8 @@
 <div>
     <div class="main">
         <table>
-            <c:forEach items="${hotel.rooms}" var="room">
-                <%--<c:forEach items="${rooms}" var="room">--%>
+            <%--<c:forEach items="${hotel.rooms}" var="room">--%>
+            <c:forEach items="${rooms}" var="room">
                 <tr class="room-table">
                     <td>
                         <img onerror="this.onerror=null;this.src='../resources/images/rooms/noImage.jpg'"
@@ -37,6 +37,8 @@
         </table>
     </div>
 </div>
+${user.role} role ${user.id}
+<p>${hotel.user.id} user id</p>
 <c:choose>
     <c:when test="${user.role == 'HotelOwner' and hotel.user.id eq user.id}">
         <div class="add-room-div">
