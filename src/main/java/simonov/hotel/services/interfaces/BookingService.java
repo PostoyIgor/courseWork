@@ -31,4 +31,6 @@ public interface BookingService {
     List<Booking> getBookings();
 
     void update(Booking booking);
+
+    boolean updateStatus(List<Booking> bookings);
 }
