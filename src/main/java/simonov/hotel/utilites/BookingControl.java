@@ -23,17 +23,13 @@ public class BookingControl {
     @Autowired
     EmailSender emailSender;
 
-    private ConcurrentHashMap<Integer, Booking> map = new ConcurrentHashMap<>();
-
-    private ScheduledExecutorService service;
+    private final ConcurrentHashMap<Integer, Booking> map = new ConcurrentHashMap<>();
 
     public BookingControl(){
-        service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                List<Booking> mailList = new LinkedList<Booking>();
-
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleWithFixedDelay((Runnable) () -> {
+            List<Booking> mailList = new LinkedList<>();
+            synchronized (map){
                 for (Map.Entry entry : map.entrySet()){
                     long creationTime = ((Booking)entry.getValue()).getCreationTime();
                     if ((System.currentTimeMillis() - creationTime) >= 86400000){
@@ -43,11 +39,10 @@ public class BookingControl {
                     if ((System.currentTimeMillis() - creationTime) >= 82800000){
                         mailList.add((Booking) entry.getValue());
                     }
-                }
+                }}
 
-                emailSender.send(mailList);
-            }
-        },0,30,TimeUnit.SECONDS);
+            emailSender.send(mailList);
+        },0,1,TimeUnit.HOURS);
     }
 
 
