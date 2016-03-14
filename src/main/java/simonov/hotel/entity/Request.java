@@ -27,18 +27,21 @@ public class Request {
         } else if (countryId != 0) {
             query.append(" h.city in (select c.id from City as c where c.country.id = :countryId) and ");
         }
-        for (int index = 1; index <= mapSize; index++) {
-            query.append(" (select count(r.id) from Room as r where h.id = r.hotel.id " +
-                    "and r.seats = :seats").append(index)
-                    .append(" and not exists (select distinct b.room.id from Booking as b where r.id = b.room.id" +
-                            " and (endDate>=:startDate and startDate<=:endDate)))>=:value").append(index).append(" and ");
-            if (index == mapSize) {
-                subQuery.append("room.seats = :seats").append(index).append(") and");
-            } else {
-                subQuery.append("room.seats = :seats").append(index).append(" or ");
+        if (seats != null){
+            for (int index = 1; index <= mapSize; index++) {
+                query.append(" (select count(r.id) from Room as r where h.id = r.hotel.id " +
+                        "and r.seats = :seats").append(index)
+                        .append(" and not exists (select distinct b.room.id from Booking as b where r.id = b.room.id" +
+                                " and (endDate>=:startDate and startDate<=:endDate)))>=:value").append(index).append(" and ");
+                if (index == mapSize) {
+                    subQuery.append("room.seats = :seats").append(index).append(") and");
+                } else {
+                    subQuery.append("room.seats = :seats").append(index).append(" or ");
+                }
             }
+            query.append(subQuery);
         }
-        query.append(subQuery);
+
         if (stars != 0) {
             query.append(" h.stars = :stars and");
         }

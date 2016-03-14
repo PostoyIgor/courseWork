@@ -25,6 +25,9 @@ public class Booking {
     private LocalDate endDate;
 
     @Column
+    private Long creationTime;
+
+    @Column
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
@@ -45,6 +48,14 @@ public class Booking {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Long creationTime) {
+        this.creationTime = creationTime;
     }
 
     public Room getRoom() {
