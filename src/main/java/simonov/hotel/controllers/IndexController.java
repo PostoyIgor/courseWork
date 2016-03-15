@@ -37,6 +37,8 @@ public class IndexController {
     @Autowired
     CityService cityService;
     @Autowired
+    OrderService orderService;
+    @Autowired
     ConvenienceService convenienceService;
     @Autowired
     EmailSender emailSender;
@@ -69,8 +71,16 @@ public class IndexController {
         model.addAttribute("hotel", hotel);
         List<Room> rooms = roomService.getRoomsByHotel(id);
         model.addAttribute("rooms", rooms);
-//        Hotel hotelItem = hotels.stream().filter(hotel -> hotel.getId() == id).findAny().get();
-//        model.addAttribute("hotel", hotelItem);
+        List<Booking> bookings = new ArrayList<>();
+        for (int i = id * 3 + 1; i < id * 3 + 7; i++) {
+            Booking booking = new Booking();
+            booking.setUser(user);
+            booking.setRoom(roomService.getRoomById(i));
+            booking.setStartDate(LocalDate.parse("2016-03-16"));
+            booking.setEndDate(LocalDate.parse("2016-03-19"));
+            bookings.add(booking);
+        }
+        orderService.createOrder(bookings, user);
         return "hotelInfo";
     }
 
@@ -99,7 +109,7 @@ public class IndexController {
                 booking.setEndDate(toDate);
                 booking.setRoom(roomService.getRoomById(roomId));
                 booking.setUser(user);
-                booking.setStatus(Status.NotConfirmed);
+//                booking.setStatus(Status.NotConfirmed);
                 bookingService.save(booking);
                 return true;
             } else return false;

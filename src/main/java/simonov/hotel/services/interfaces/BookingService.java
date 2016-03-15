@@ -32,5 +32,5 @@ public interface BookingService {
 
     void update(Booking booking);
 
-    boolean updateStatus(List<Booking> bookings);
+//    boolean updateStatus(List<Booking> bookings);
 }

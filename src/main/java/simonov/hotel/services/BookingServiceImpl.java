@@ -7,9 +7,9 @@ import simonov.hotel.dao.interfaces.BookingDAO;
 import simonov.hotel.dao.interfaces.RoomDAO;
 import simonov.hotel.entity.Booking;
 import simonov.hotel.entity.Room;
-import simonov.hotel.entity.Status;
 import simonov.hotel.services.interfaces.BookingService;
 import simonov.hotel.utilites.BookingControl;
+import simonov.hotel.utilites.EmailSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,8 @@ public class BookingServiceImpl implements BookingService {
     RoomDAO roomDAO;
     @Autowired
     BookingControl bookingControl;
+    @Autowired
+    EmailSender emailSender;
 
     @Override
     public List<Booking> getBookingsByUser(int userId) {
@@ -75,7 +77,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void delete(Booking booking, String message) {
-//        emailSender.sendEmail(booking.getUser().getEmail(),message);
         bookingDAO.delete(booking);
     }
 
@@ -84,18 +85,17 @@ public class BookingServiceImpl implements BookingService {
         bookingDAO.update(booking);
     }
 
-    @Override
-    public boolean updateStatus(List<Booking> bookings) {
-        if (bookingControl.removeAll(bookings)){
-            bookings.stream().forEach(booking -> {
-                booking.setStatus(Status.Confirmed);
-                bookingDAO.update(booking);
-            });
-            return true;
-        };
-        return false;
-
-    }
+//    @Override
+//    public boolean updateStatus(List<Booking> bookings) {
+//        if (bookingControl.removeAll(bookings)){
+//            bookings.stream().forEach(booking -> {
+////                booking.setStatus(Status.Confirmed);
+//                bookingDAO.update(booking);
+//            });
+//            return true;
+//        };
+//        return false;
+//    }
 
     @Override
     public List<Booking> getBookings() {
@@ -117,10 +117,10 @@ public class BookingServiceImpl implements BookingService {
                 bookingDAO.save(booking);
                 roomDAO.unlock(booking.getRoom().getId());
             }
-            bookingControl.addAll(bookings);
         } else {
             bookings.stream().forEach(booking -> roomDAO.unlock(booking.getRoom().getId()));
         }
+
         return result;
     }
 }

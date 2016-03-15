@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
-import simonov.hotel.entity.Booking;
+import org.springframework.stereotype.Component;
+import simonov.hotel.entity.Order;
 
 import java.util.List;
 
-@Service
+@Component
 public class EmailSender {
     private static Log log = LogFactory.getLog(EmailSender.class);
 
@@ -27,11 +27,12 @@ public class EmailSender {
         try {
             mailSender.send(templateMessage);
         } catch (MailException e) {
-            log.error("Email sending failed due to exception:", e);
+//            log.error("Email sending failed due to exception:", e);
+            System.out.println(e.getMessage());
         }
     }
 
-    public void sendEmail(List<Booking> bookingList, String message) {
-        bookingList.stream().forEach(booking -> sendEmail(booking.getUser().getEmail(), message));
+    public void sendEmail(List<Order> orders, String message) {
+        orders.stream().forEach(order -> sendEmail(order.getUser().getEmail(), message));
     }
 }
