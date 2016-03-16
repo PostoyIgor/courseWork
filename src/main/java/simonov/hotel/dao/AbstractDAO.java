@@ -1,9 +1,7 @@
 package simonov.hotel.dao;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import simonov.hotel.dao.interfaces.GenericDAO;
@@ -36,13 +34,6 @@ public abstract class AbstractDAO<T, PK extends Serializable> implements Generic
     @Override
     public List<T> getAll() {
         return getCurrentSession().createCriteria(type).list();
-    }
-
-    @Override
-    public Long getTotalCount() {
-        Criteria criteriaCount = getCurrentSession().createCriteria(type);
-        criteriaCount.setProjection(Projections.rowCount());
-        return (Long) criteriaCount.uniqueResult();
     }
 
     @Override

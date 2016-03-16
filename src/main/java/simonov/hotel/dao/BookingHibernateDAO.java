@@ -17,13 +17,6 @@ public class BookingHibernateDAO extends AbstractDAO<Booking, Integer> implement
     }
 
     @Override
-    public List<Booking> getBookingsByUser(int userId) {
-        Query query = getCurrentSession().createQuery("from Booking where user.id = :userId");
-        query.setInteger("userId", userId);
-        return query.list();
-    }
-
-    @Override
     public List<Booking> getBookingsByRoom(int roomId) {
         Query query = getCurrentSession().createQuery("from Booking where room.id = :roomId");
         query.setInteger("roomId", roomId);
@@ -39,26 +32,10 @@ public class BookingHibernateDAO extends AbstractDAO<Booking, Integer> implement
     }
 
     @Override
-    public List<Booking> getActualBookingsByUser(int userId) {
-        Query query = getCurrentSession().createQuery("from Booking where user.id=:userId and startDate>=:today");
-        query.setParameter("userId", userId);
-        query.setParameter("today", LocalDate.now());
-        return query.list();
-    }
-
-    @Override
     public List<Booking> getActualBookingsByHotel(int hotelId) {
         Query query = getCurrentSession().createQuery("from Booking where room in " +
                 "(from Room as r where r.hotel.id = :hotelId) and startDate>=:today");
         query.setParameter("hotelId", hotelId);
-        query.setParameter("today", LocalDate.now());
-        return query.list();
-    }
-
-    @Override
-    public List<Booking> getHistoryBookingsByUser(int userId) {
-        Query query = getCurrentSession().createQuery("from Booking where user.id=:userId and startDate<:today");
-        query.setParameter("userId", userId);
         query.setParameter("today", LocalDate.now());
         return query.list();
     }

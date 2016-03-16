@@ -37,8 +37,8 @@
         </table>
     </div>
 </div>
-${user.role} role ${user.id}
-<p>${hotel.user.id} user id</p>
+${user.role} role, user id ${user.id}
+<p>${hotel.user.id}Hotel owner id</p>
 <c:choose>
     <c:when test="${user.role == 'HotelOwner' and hotel.user.id eq user.id}">
         <div class="add-room-div">

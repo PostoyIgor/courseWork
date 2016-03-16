@@ -48,10 +48,7 @@ public class User {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "user")
-    private List<Booking> bookings;
-
-    public User() {
-    }
+    private List<Order> orders;
 
     public String getPassword() {
         return password;
@@ -117,12 +114,12 @@ public class User {
         this.hotels = hotels;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     public Role getRole() {

@@ -10,8 +10,6 @@ public interface GenericDAO<T, PK extends Serializable> {
 
     List<T> getAll();
 
-    Long getTotalCount();
-
     void update(T o);
 
     void delete(T o);

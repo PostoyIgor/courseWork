@@ -10,10 +10,6 @@ public class Booking {
     @Column
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "room_id")
     private Room room;
@@ -24,15 +20,17 @@ public class Booking {
     @Column
     private LocalDate endDate;
 
-    @Column
-    private Long creationTime;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-    @Column
-    @Enumerated(EnumType.ORDINAL)
-    private Status status;
+    public Order getOrder() {
+        return order;
+    }
 
-    @Column
-    private boolean commented;
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
     public int getId() {
         return id;
@@ -40,22 +38,6 @@ public class Booking {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Long getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(Long creationTime) {
-        this.creationTime = creationTime;
     }
 
     public Room getRoom() {
@@ -80,21 +62,5 @@ public class Booking {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public boolean isCommented() {
-        return commented;
-    }
-
-    public void setCommented(boolean commented) {
-        this.commented = commented;
     }
 }
