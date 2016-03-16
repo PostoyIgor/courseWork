@@ -61,6 +61,9 @@ public class HotelHibernateDAO extends AbstractDAO<Hotel, Integer> implements Ho
     @Override
     public List<Hotel> getHotelsWithFreeRoom(Request request) {
         Query query = getCurrentSession().createQuery(request.getQuery());
+
+        //TODO move prepared statements from Request here.
+        //TODO try via criteria and subquery http://stackoverflow.com/questions/3738555/hibernate-criteria-subquery
         query.setParameter("startDate", request.getStartDate());
         query.setParameter("endDate", request.getEndDate());
         if (request.getHotelId() != 0) {

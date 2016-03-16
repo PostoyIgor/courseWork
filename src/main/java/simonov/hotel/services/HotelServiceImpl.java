@@ -55,7 +55,7 @@ public class HotelServiceImpl implements HotelService {
         return hotelDAO.getHotelsByCity(city);
     }
 
-    //TODO getHotelsByCityAndConvenience
+    //TODO getHotelsByCityAndConvenience and FreeRooms
 
     @Override
     public List<Hotel> getHotelsWithFreeRoom(Request request) {
