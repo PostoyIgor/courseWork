@@ -76,4 +76,7 @@ public class BookingServiceImpl implements BookingService {
         }
         return result;
     }
+
+    //TODO create method removeOldBookihgs with endDate < today
+    //TODO scheduler for removeOldBookihgs, launch each day
 }
