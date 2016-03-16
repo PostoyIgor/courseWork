@@ -1,7 +1,6 @@
 package simonov.hotel.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import simonov.hotel.entity.*;
 import simonov.hotel.services.interfaces.*;
-import simonov.hotel.utilites.EmailSender;
 import simonov.hotel.utilites.FileUpLoader;
 
 import javax.servlet.ServletContext;
@@ -40,8 +38,6 @@ public class IndexController {
     OrderService orderService;
     @Autowired
     ConvenienceService convenienceService;
-    @Autowired
-    EmailSender emailSender;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printHotels(@ModelAttribute User user, @ModelAttribute ArrayList<Hotel> hotels, Model model) {
@@ -74,7 +70,6 @@ public class IndexController {
         List<Booking> bookings = new ArrayList<>();
         for (int i = id * 3 + 1; i < id * 3 + 7; i++) {
             Booking booking = new Booking();
-            booking.setUser(user);
             booking.setRoom(roomService.getRoomById(i));
             booking.setStartDate(LocalDate.parse("2016-03-16"));
             booking.setEndDate(LocalDate.parse("2016-03-19"));
@@ -93,29 +88,6 @@ public class IndexController {
         model.addAttribute("hotel", room.getHotel());
         model.addAttribute("room", room);
         return "roomInfo";
-    }
-
-
-    @RequestMapping(value = "/check-date", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    boolean checkDate(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate,
-                      @RequestParam int roomId, @ModelAttribute User user, Model model) {
-        if (user.getRole() != Role.NotAuthorized) {
-            if (fromDate.isBefore(toDate) && roomService.isFree(fromDate, toDate, roomId)) {
-                Booking booking = new Booking();
-                booking.setStartDate(fromDate);
-                booking.setEndDate(toDate);
-                booking.setRoom(roomService.getRoomById(roomId));
-                booking.setUser(user);
-//                booking.setStatus(Status.NotConfirmed);
-                bookingService.save(booking);
-                return true;
-            } else return false;
-        } else {
-            return false;
-        }
     }
 
     @RequestMapping(value = "/comment/{hotelId}")
@@ -164,8 +136,8 @@ public class IndexController {
         newHotel.setUser(userService.get(owner));
         hotelService.saveHotel(newHotel);
         if (image.getContentType().equals("image/jpeg")) {
-            String subPath = servletContext.getRealPath("/resources/images/hotels/") + newHotel.getId() + ".jpg";
-            FileUpLoader.uploadImage(image, subPath);
+            String path = servletContext.getRealPath("/resources/images/hotels/") + newHotel.getId() + ".jpg";
+            FileUpLoader.uploadImage(image, path);
         }
         return "redirect:/profile";
     }
@@ -177,7 +149,7 @@ public class IndexController {
             model.addAttribute("hotels", hotels);
             return "hotelsOwner";
         } else if (user.getRole() == Role.CLIENT) {
-            model.addAttribute("bookings", bookingService.getActualBookingsByUser(user.getId()));
+//            model.addAttribute("bookings", bookingService.getActualBookingsByUser(user.getId()));
             return "userReservation";
         } else return "redirect:/";
     }

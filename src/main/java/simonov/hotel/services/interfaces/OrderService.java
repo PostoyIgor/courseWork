@@ -19,5 +19,7 @@ public interface OrderService {
 
     boolean updateStatus(Order order);
 
-    void delete(Order order, String message);
+    void setCommented(Order order);
+
+    void delete(Order order);
 }

@@ -8,8 +8,6 @@ import simonov.hotel.dao.interfaces.RoomDAO;
 import simonov.hotel.entity.Booking;
 import simonov.hotel.entity.Room;
 import simonov.hotel.services.interfaces.BookingService;
-import simonov.hotel.utilites.BookingControl;
-import simonov.hotel.utilites.EmailSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +20,6 @@ public class BookingServiceImpl implements BookingService {
     BookingDAO bookingDAO;
     @Autowired
     RoomDAO roomDAO;
-    @Autowired
-    BookingControl bookingControl;
-    @Autowired
-    EmailSender emailSender;
-
-    @Override
-    public List<Booking> getBookingsByUser(int userId) {
-        return bookingDAO.getBookingsByUser(userId);
-    }
-
-    @Override
-    public List<Booking> getActualBookingsByUser(int userId) {
-        return bookingDAO.getActualBookingsByUser(userId);
-    }
 
     @Override
     public List<Booking> getBookingsByRoom(int roomId) {
@@ -53,26 +37,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getHistoryBookingsByUser(int userId) {
-        return bookingDAO.getHistoryBookingsByUser(userId);
-    }
-
-    @Override
     public List<Booking> getHistoryBookingsByHotel(int hotelId) {
         return bookingDAO.getHistoryBookingsByHotel(hotelId);
-    }
-
-    // I think - it is not need
-    @Override
-    public Integer save(Booking booking) {
-        roomDAO.setLock(booking.getRoom().getId());
-        if (roomDAO.isFree(booking.getStartDate(), booking.getEndDate(), booking.getRoom().getId())) {
-            int id = bookingDAO.save(booking);
-            roomDAO.unlock(booking.getRoom().getId());
-            return id;
-        }
-        roomDAO.unlock(booking.getRoom().getId());
-        return 0;
     }
 
     @Override
@@ -84,18 +50,6 @@ public class BookingServiceImpl implements BookingService {
     public void update(Booking booking) {
         bookingDAO.update(booking);
     }
-
-//    @Override
-//    public boolean updateStatus(List<Booking> bookings) {
-//        if (bookingControl.removeAll(bookings)){
-//            bookings.stream().forEach(booking -> {
-////                booking.setStatus(Status.Confirmed);
-//                bookingDAO.update(booking);
-//            });
-//            return true;
-//        };
-//        return false;
-//    }
 
     @Override
     public List<Booking> getBookings() {
@@ -120,7 +74,6 @@ public class BookingServiceImpl implements BookingService {
         } else {
             bookings.stream().forEach(booking -> roomDAO.unlock(booking.getRoom().getId()));
         }
-
         return result;
     }
 }

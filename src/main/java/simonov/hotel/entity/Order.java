@@ -27,6 +27,9 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column
+    private boolean commented;
+
     public User getUser() {
         return user;
     }
@@ -65,5 +68,13 @@ public class Order {
 
     public void setCreationTime(Long creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public boolean isCommented() {
+        return commented;
+    }
+
+    public void setCommented(boolean commented) {
+        this.commented = commented;
     }
 }

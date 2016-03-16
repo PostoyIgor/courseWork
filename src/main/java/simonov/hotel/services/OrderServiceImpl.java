@@ -7,8 +7,7 @@ import simonov.hotel.dao.interfaces.OrderDAO;
 import simonov.hotel.entity.*;
 import simonov.hotel.services.interfaces.BookingService;
 import simonov.hotel.services.interfaces.OrderService;
-import simonov.hotel.utilites.BookingControl;
-import simonov.hotel.utilites.EmailSender;
+import simonov.hotel.utilites.OrderControl;
 
 import java.util.List;
 
@@ -19,11 +18,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderDAO orderDAO;
     @Autowired
-    EmailSender emailSender;
-    @Autowired
     BookingService bookingService;
     @Autowired
-    BookingControl bookingControl;
+    OrderControl orderControl;
 
     @Override
     public List<Room> createOrder(List<Booking> bookings, User user) {
@@ -31,13 +28,12 @@ public class OrderServiceImpl implements OrderService {
         order.setCreationTime(System.currentTimeMillis());
         order.setStatus(Status.NotConfirmed);
         order.setUser(user);
-        List<Room> rooms;
         bookings.stream().forEach(booking -> booking.setOrder(order));
-        rooms = bookingService.saveAll(bookings);
+        List<Room> rooms = bookingService.saveAll(bookings);
         if (rooms.isEmpty()) {
             order.setBookings(bookings);
             orderDAO.save(order);
-            bookingControl.addOrder(order);
+            orderControl.addOrder(order);
         }
         return rooms;
     }
@@ -58,8 +54,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void setCommented(Order order) {
+        order.setCommented(true);
+        orderDAO.update(order);
+    }
+
+    @Override
     public boolean updateStatus(Order order) {
-        if (bookingControl.removeOrder(order)) {
+        if (orderControl.removeOrder(order)) {
             order.setStatus(Status.Confirmed);
             orderDAO.update(order);
             return true;
@@ -68,8 +70,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void delete(Order order, String message) {
+    public void delete(Order order) {
         orderDAO.delete(order);
-        emailSender.sendEmail(order.getUser().getEmail(), message);
     }
 }

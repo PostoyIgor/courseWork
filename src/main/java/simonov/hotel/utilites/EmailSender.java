@@ -1,7 +1,6 @@
 package simonov.hotel.utilites;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Component
 public class EmailSender {
-    private static Log log = LogFactory.getLog(EmailSender.class);
+    private static Logger logger = Logger.getLogger(EmailSender.class);
 
     @Autowired
     private MailSender mailSender;
@@ -26,9 +25,8 @@ public class EmailSender {
         templateMessage.setText(message);
         try {
             mailSender.send(templateMessage);
-        } catch (MailException e) {
-//            log.error("Email sending failed due to exception:", e);
-            System.out.println(e.getMessage());
+        } catch (NullPointerException | MailException e) {
+            logger.error("Email sending failed due to exception:", e);
         }
     }
 

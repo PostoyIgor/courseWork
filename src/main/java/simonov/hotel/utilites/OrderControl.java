@@ -1,5 +1,6 @@
 package simonov.hotel.utilites;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simonov.hotel.entity.Order;
@@ -14,54 +15,48 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class BookingControl {
+public class OrderControl {
     private static final String MESSAGE = "If you do not pay within a hour, your reservation will be deleted";
-
+    private static final ConcurrentHashMap<Integer, Order> ORDER_MAP = new ConcurrentHashMap<>();
+    private Logger logger = Logger.getLogger(OrderControl.class);
     @Autowired
     EmailSender emailSender;
     @Autowired
     OrderService orderService;
 
-    private final ConcurrentHashMap<Integer, Order> map = new ConcurrentHashMap<>();
-
-    public BookingControl() {
+    public OrderControl() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleWithFixedDelay((Runnable) () -> {
             List<Order> mailList = new LinkedList<>();
-            try {
-                synchronized (map) {
-                    System.out.println("Every 30 sec");
-                    for (Map.Entry<Integer, Order> entry : map.entrySet()) {
-                        System.out.println("inside loop");
+            synchronized (ORDER_MAP) {
+                for (Map.Entry<Integer, Order> entry : ORDER_MAP.entrySet()) {
+                    try {
                         long creationTime = (entry.getValue()).getCreationTime();
-                        if ((System.currentTimeMillis() - creationTime) >= 140000 /*86400000*/) {
-                            System.out.println("Before deleting");
-                            orderService.delete(entry.getValue(), "Your booking del");
-                            map.remove(entry.getKey());
-                        } else if ((System.currentTimeMillis() - creationTime) >= 120000 /*82800000*/) {
-                            System.out.println("add to mailList");
+                        if ((System.currentTimeMillis() - creationTime) >= 120000 /*86400000*/) {
+                            orderService.delete(entry.getValue());
+                            emailSender.sendEmail(entry.getValue().getUser().getEmail(), "Your bookings is removed");
+                            ORDER_MAP.remove(entry.getKey());
+                        } else if ((System.currentTimeMillis() - creationTime) >= 60000 /*82800000*/) {
                             mailList.add(entry.getValue());
                         }
+                    } catch (Exception e) {
+                        logger.error("OrderControl exception:" + e);
                     }
                 }
                 if (!mailList.isEmpty()) {
-                    System.out.println("SENDING");
                     emailSender.sendEmail(mailList, MESSAGE);
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
             }
         }, 0, 30, TimeUnit.SECONDS);
     }
 
     public void addOrder(Order order) {
-        map.put(order.getId(), order);
+        ORDER_MAP.put(order.getId(), order);
     }
 
     public synchronized boolean removeOrder(Order order) {
-        System.out.println(map.size() + " MAP SIZE");
-        if (map.values().contains(order)) {
-            map.remove(order.getId());
+        if (ORDER_MAP.values().contains(order)) {
+            ORDER_MAP.remove(order.getId());
             return true;
         } else {
             return false;
