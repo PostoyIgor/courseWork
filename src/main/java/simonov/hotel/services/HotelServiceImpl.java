@@ -55,6 +55,8 @@ public class HotelServiceImpl implements HotelService {
         return hotelDAO.getHotelsByCity(city);
     }
 
+    //TODO getHotelsByCityAndConvenience
+
     @Override
     public List<Hotel> getHotelsWithFreeRoom(Request request) {
         if (request.getCountryId() == 0 && request.getCityId() == 0 && request.getHotelId() == 0) {
